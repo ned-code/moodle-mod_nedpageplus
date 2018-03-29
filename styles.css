@@ -1,9 +1,27 @@
+
 #page-mod-nedpageplus-view .attachment-wrapper-top {
-    text-align: right;
+    display: flex;
+    justify-content: right;
+    align-items: right;
+}
+#page-mod-nedpageplus-view .attachment-wrapper-top div {
     margin-bottom: 15px;
+    border: 1px solid #0070a8;
+    border-radius: 2px;
+    padding: 6px 8px;
+    display: inline-block;
 }
 #page-mod-nedpageplus-view .attachment-wrapper-bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#page-mod-nedpageplus-view .attachment-wrapper-bottom div {
+    font-size: 1.4em;
     text-align: center;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin: 15px auto;
+    border: 1px solid #0070a8;
+    border-radius: 2px;
+    padding: 8px 10px;
+    display: inline-block;
 }

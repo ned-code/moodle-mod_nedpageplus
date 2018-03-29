@@ -64,7 +64,10 @@ if ($files) {
     unset($files);
     //$fileurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
     //$filelink = html_writer::link($fileurl, ($page->linkname) ? $page->linkname : $file->get_filename());
-    $filelink = html_writer::link(new moodle_url('/mod/nedpageplus/attachment.php', array('id' => $id)),
+    $icon = $OUTPUT->image_url(file_file_icon($file, 24))->out(false);
+    $filelink = html_writer::img($icon, '').' '.
+        html_writer::link(
+        new moodle_url('/mod/nedpageplus/attachment.php', array('id' => $id)),
         ($page->linkname) ? $page->linkname : $file->get_filename());
 }
 
@@ -100,13 +103,19 @@ $formatoptions->context = $context;
 $content = format_text($content, $page->contentformat, $formatoptions);
 
 if ($filelink && ($page->linkposition == NEDPAGEPLUS_TOP || $page->linkposition == NEDPAGEPLUS_BOTH)) {
-    echo html_writer::div($filelink, 'attachment-wrapper-top');
+    echo html_writer::div(
+        html_writer::div($filelink, 'attachment-wrapper-top'),
+        'attachment-wrapper-top'
+    );
 }
 
 echo $OUTPUT->box($content, "generalbox center clearfix");
 
 if ($filelink && ($page->linkposition == NEDPAGEPLUS_BOTTOM || $page->linkposition == NEDPAGEPLUS_BOTH)) {
-    echo html_writer::div($filelink, 'attachment-wrapper-bottom');
+    echo html_writer::div(
+        html_writer::div($filelink, ''),
+        'attachment-wrapper-bottom'
+    );
 }
 
 $strlastmodified = get_string("lastmodified");
