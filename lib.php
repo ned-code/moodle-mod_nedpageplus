@@ -106,6 +106,16 @@ function nedpageplus_add_instance($data, $mform = null) {
     $cmid = $data->coursemodule;
 
     $data->timemodified = time();
+    // File options.
+    $filedisplayoptions = array();
+    if ($data->filedisplay == RESOURCELIB_DISPLAY_POPUP) {
+        $filedisplayoptions['filepopupwidth']  = $data->filepopupwidth;
+        $filedisplayoptions['filepopupheight'] = $data->filepopupheight;
+    }
+    $filedisplayoptions['fileprintheading'] = $data->fileprintheading;
+    $filedisplayoptions['fileprintintro']   = $data->fileprintintro;
+    $data->filedisplayoptions = serialize($filedisplayoptions);
+    // Page options.
     $displayoptions = array();
     if ($data->display == RESOURCELIB_DISPLAY_POPUP) {
         $displayoptions['popupwidth']  = $data->popupwidth;
@@ -156,7 +166,16 @@ function nedpageplus_update_instance($data, $mform) {
     $data->timemodified = time();
     $data->id           = $data->instance;
     $data->revision++;
-
+    // File options.
+    $filedisplayoptions = array();
+    if ($data->filedisplay == RESOURCELIB_DISPLAY_POPUP) {
+        $filedisplayoptions['filepopupwidth']  = $data->filepopupwidth;
+        $filedisplayoptions['filepopupheight'] = $data->filepopupheight;
+    }
+    $filedisplayoptions['fileprintheading'] = $data->fileprintheading;
+    $filedisplayoptions['fileprintintro']   = $data->fileprintintro;
+    $data->filedisplayoptions = serialize($filedisplayoptions);
+    // Page options.
     $displayoptions = array();
     if ($data->display == RESOURCELIB_DISPLAY_POPUP) {
         $displayoptions['popupwidth']  = $data->popupwidth;

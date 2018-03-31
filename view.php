@@ -62,13 +62,35 @@ $filelink = null;
 if ($files) {
     $file = reset($files);
     unset($files);
-    //$fileurl = moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
-    //$filelink = html_writer::link($fileurl, ($page->linkname) ? $page->linkname : $file->get_filename());
+
     $icon = $OUTPUT->image_url(file_file_icon($file, 24))->out(false);
-    $filelink = html_writer::img($icon, '').' '.
-        html_writer::link(
-        new moodle_url('/mod/nedpageplus/attachment.php', array('id' => $id)),
-        ($page->linkname) ? $page->linkname : $file->get_filename());
+
+    $displaytype = nedpageplus_get_final_display_type($page);
+    if ($displaytype == RESOURCELIB_DISPLAY_POPUP) {
+        $path = '/'.$file->get_contextid().'/mod_nedpageplus/attachment/'.$page->revision.$file->get_filepath().$file->get_filename();
+        $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
+        $options = empty($page->filedisplayoptions) ? array() : unserialize($page->filedisplayoptions);
+        $width  = empty($options['filepopupwidth'])  ? 620 : $options['filepopupwidth'];
+        $height = empty($options['filepopupheight']) ? 450 : $options['filepopupheight'];
+        $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
+        $extra = "onclick=\"window.open('$fullurl', '', '$wh'); return false;\"";
+        //$filelink = html_writer::img($icon, '') . ' ' . "<a href=\"$fullurl\" $extra>".($page->linkname) ? $page->linkname : $file->get_filename()."</a>";
+
+        $filelink = html_writer::img($icon, '') . ' ' .
+            html_writer::link(
+                $fullurl,
+                ($page->linkname) ? $page->linkname : $file->get_filename(),
+                array(
+                    'onclick' => "window.open('$fullurl', '', '$wh'); return false;"
+                )
+            );
+    } else {
+        $filelink = html_writer::img($icon, '') . ' ' .
+            html_writer::link(
+                new moodle_url('/mod/nedpageplus/attachment.php', array('id' => $id)),
+                ($page->linkname) ? $page->linkname : $file->get_filename()
+            );
+    }
 }
 
 $options = empty($page->displayoptions) ? array() : unserialize($page->displayoptions);

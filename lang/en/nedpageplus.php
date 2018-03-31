@@ -23,6 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['attachmentbehaviour'] = 'Attachment behaviour';
 $string['bottom'] = 'Bottom';
 $string['clicktoopen2'] = 'Click {$a} link to view the file.';
 $string['configdisplayoptions'] = 'Select all options that should be available, existing settings are not modified. Hold CTRL key to select multiple fields.';
@@ -69,6 +70,7 @@ $string['optionsheader'] = 'Display options';
 $string['page-mod-page-x'] = 'Any page module page';
 $string['page:addinstance'] = 'Add a new page resource';
 $string['page:view'] = 'View page content';
+$string['pagebehaviour'] = 'Page behaviour';
 $string['pluginadministration'] = 'Page module administration';
 $string['pluginname'] = 'NED Page Plus';
 $string['popupheight'] = 'Pop-up height (in pixels)';

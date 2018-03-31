@@ -132,9 +132,9 @@ function nedpageplus_print_workaround($resource, $cm, $course, $file) {
         case RESOURCELIB_DISPLAY_POPUP:
             $path = '/'.$file->get_contextid().'/mod_nedpageplus/attachment/'.$resource->revision.$file->get_filepath().$file->get_filename();
             $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
-            $options = empty($resource->displayoptions) ? array() : unserialize($resource->displayoptions);
-            $width  = empty($options['popupwidth'])  ? 620 : $options['popupwidth'];
-            $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
+            $options = empty($resource->filedisplayoptions) ? array() : unserialize($resource->filedisplayoptions);
+            $width  = empty($options['filepopupwidth'])  ? 620 : $options['filepopupwidth'];
+            $height = empty($options['filepopupheight']) ? 450 : $options['filepopupheight'];
             $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
             $extra = "onclick=\"window.open('$fullurl', '', '$wh'); return false;\"";
             echo nedpageplus_get_clicktoopen($file, $resource->revision, $extra);
