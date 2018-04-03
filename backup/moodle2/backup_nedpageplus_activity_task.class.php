@@ -40,10 +40,10 @@ class backup_nedpageplus_activity_task extends backup_activity_task {
     }
 
     /**
-     * Defines a backup step to store the instance data in the page.xml file
+     * Defines a backup step to store the instance data in the nedpageplus.xml file
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_nedpageplus_activity_structure_step('nedpageplus_structure', 'page.xml'));
+        $this->add_step(new backup_nedpageplus_activity_structure_step('nedpageplus_structure', 'nedpageplus.xml'));
     }
 
     /**
@@ -57,13 +57,13 @@ class backup_nedpageplus_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot,"/");
 
-        // Link to the list of pages
-        $search="/(".$base."\/mod\/page\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@PAGEINDEX*$2@$', $content);
+        // Link to the list of nedpagepluss
+        $search="/(".$base."\/mod\/nedpageplus\/index.php\?id\=)([0-9]+)/";
+        $content= preg_replace($search, '$@NEDPAGEPLUSINDEX*$2@$', $content);
 
-        // Link to page view by moduleid
-        $search="/(".$base."\/mod\/page\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@PAGEVIEWBYID*$2@$', $content);
+        // Link to nedpageplus view by moduleid
+        $search="/(".$base."\/mod\/nedpageplus\/view.php\?id\=)([0-9]+)/";
+        $content= preg_replace($search, '$@NEDPAGEPLUSVIEWBYID*$2@$', $content);
 
         return $content;
     }

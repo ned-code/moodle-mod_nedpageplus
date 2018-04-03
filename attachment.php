@@ -101,4 +101,3 @@ switch ($displaytype) {
         nedpageplus_print_workaround($nedpageplus, $cm, $course, $file);
         break;
 }
-

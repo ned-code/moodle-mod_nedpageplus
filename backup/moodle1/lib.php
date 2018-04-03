@@ -101,8 +101,8 @@ class moodle1_mod_nedpageplus_handler extends moodle1_resource_successor_handler
         $this->fileman->itemid   = 0;
         $page['content'] = moodle1_converter::migrate_referenced_files($page['content'], $this->fileman);
 
-        // write page.xml
-        $this->open_xml_writer("activities/nedpageplus_{$moduleid}/page.xml");
+        // write nedpageplus.xml
+        $this->open_xml_writer("activities/nedpageplus_{$moduleid}/nedpageplus.xml");
         $this->xmlwriter->begin_tag('activity', array('id' => $instanceid, 'moduleid' => $moduleid,
             'modulename' => 'nedpageplus', 'contextid' => $contextid));
         $this->write_xml('nedpageplus', $page, array('/nedpageplus/id'));

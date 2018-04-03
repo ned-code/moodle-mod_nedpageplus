@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   mod_nedpageplus
+ * @package   mod_nednedpageplusplus
  * @category  backup
  * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,20 +27,20 @@
  */
 
 /**
- * Structure step to restore one page activity
+ * Structure step to restore one nedpageplus activity
  */
 class restore_nedpageplus_activity_structure_step extends restore_activity_structure_step {
 
     protected function define_structure() {
 
         $paths = array();
-        $paths[] = new restore_path_element('nedpageplus', '/activity/page');
+        $paths[] = new restore_path_element('nedpageplus', '/activity/nedpageplus');
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_page($data) {
+    protected function process_nedpageplus($data) {
         global $DB;
 
         $data = (object)$data;
@@ -50,15 +50,16 @@ class restore_nedpageplus_activity_structure_step extends restore_activity_struc
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
 
-        // insert the page record
+        // insert the nedpageplus record
         $newitemid = $DB->insert_record('nedpageplus', $data);
         // immediately after inserting "activity" record, call this
         $this->apply_activity_instance($newitemid);
     }
 
     protected function after_execute() {
-        // Add page related files, no need to match by itemname (just internally handled context)
+        // Add nedpageplus related files, no need to match by itemname (just internally handled context)
         $this->add_related_files('mod_nedpageplus', 'intro', null);
         $this->add_related_files('mod_nedpageplus', 'content', null);
+        $this->add_related_files('mod_nedpageplus', 'attachment', null);
     }
 }

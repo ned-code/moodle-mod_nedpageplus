@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
  */
 
 /**
- * Define the complete page structure for backup, with file and id annotations
+ * Define the complete nedpageplus structure for backup, with file and id annotations
  */
 class backup_nedpageplus_activity_structure_step extends backup_activity_structure_step {
 
@@ -39,25 +39,26 @@ class backup_nedpageplus_activity_structure_step extends backup_activity_structu
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated
-        $page = new backup_nested_element('nedpageplus', array('id'), array(
+        $nedpageplus = new backup_nested_element('nedpageplus', array('id'), array(
             'name', 'intro', 'introformat', 'content', 'contentformat',
-            'legacyfiles', 'legacyfileslast', 'display', 'displayoptions',
-            'revision', 'timemodified'));
+            'legacyfiles', 'legacyfileslast', 'linkname', 'linkposition', 'display', 'displayoptions',
+            'filedisplay', 'filedisplayoptions', 'revision', 'timemodified'));
 
         // Build the tree
         // (love this)
 
         // Define sources
-        $page->set_source_table('nedpageplus', array('id' => backup::VAR_ACTIVITYID));
+        $nedpageplus->set_source_table('nedpageplus', array('id' => backup::VAR_ACTIVITYID));
 
         // Define id annotations
         // (none)
 
         // Define file annotations
-        $page->annotate_files('mod_nedpageplus', 'intro', null); // This file areas haven't itemid
-        $page->annotate_files('mod_nedpageplus', 'content', null); // This file areas haven't itemid
+        $nedpageplus->annotate_files('mod_nedpageplus', 'intro', null); // This file areas haven't itemid
+        $nedpageplus->annotate_files('mod_nedpageplus', 'content', null); // This file areas haven't itemid
+        $nedpageplus->annotate_files('mod_nedpageplus', 'attachment', null); // This file areas haven't itemid
 
-        // Return the root element (page), wrapped into standard activity structure
-        return $this->prepare_activity_structure($page);
+        // Return the root element (nedpageplus), wrapped into standard activity structure
+        return $this->prepare_activity_structure($nedpageplus);
     }
 }

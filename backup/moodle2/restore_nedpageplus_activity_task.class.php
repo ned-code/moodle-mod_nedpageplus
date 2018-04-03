@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/nedpageplus/backup/moodle2/restore_nedpageplus_stepslib.php'); // Because it exists (must)
 
 /**
- * page restore task that provides all the settings and steps to perform one
+ * nedpageplus restore task that provides all the settings and steps to perform one
  * complete restore of the activity
  */
 class restore_nedpageplus_activity_task extends restore_activity_task {
@@ -44,7 +44,7 @@ class restore_nedpageplus_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // label only has one structure step
-        $this->add_step(new restore_nedpageplus_activity_structure_step('nedpageplus_structure', 'page.xml'));
+        $this->add_step(new restore_nedpageplus_activity_structure_step('nedpageplus_structure', 'nedpageplus.xml'));
     }
 
     /**
@@ -66,8 +66,8 @@ class restore_nedpageplus_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         $rules = array();
 
-        $rules[] = new restore_decode_rule('PAGEVIEWBYID', '/mod/nedpageplus/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('PAGEINDEX', '/mod/nedpageplus/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('NEDPAGEPLUSVIEWBYID', '/mod/nedpageplus/view.php?id=$1', 'course_module');
+        $rules[] = new restore_decode_rule('NEDPAGEPLUSINDEX', '/mod/nedpageplus/index.php?id=$1', 'course');
 
         return $rules;
 
@@ -76,15 +76,15 @@ class restore_nedpageplus_activity_task extends restore_activity_task {
     /**
      * Define the restore log rules that will be applied
      * by the {@link restore_logs_processor} when restoring
-     * page logs. It must return one array
+     * nedpageplus logs. It must return one array
      * of {@link restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
         $rules = array();
 
-        $rules[] = new restore_log_rule('nedpageplus', 'add', 'view.php?id={course_module}', '{page}');
-        $rules[] = new restore_log_rule('nedpageplus', 'update', 'view.php?id={course_module}', '{page}');
-        $rules[] = new restore_log_rule('nedpageplus', 'view', 'view.php?id={course_module}', '{page}');
+        $rules[] = new restore_log_rule('nedpageplus', 'add', 'view.php?id={course_module}', '{nedpageplus}');
+        $rules[] = new restore_log_rule('nedpageplus', 'update', 'view.php?id={course_module}', '{nedpageplus}');
+        $rules[] = new restore_log_rule('nedpageplus', 'view', 'view.php?id={course_module}', '{nedpageplus}');
 
         return $rules;
     }

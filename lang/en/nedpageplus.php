@@ -53,7 +53,7 @@ $string['legacyfilesactive'] = 'Active';
 $string['legacyfilesdone'] = 'Finished';
 $string['linkname'] = 'Link name';
 $string['linkposition'] = 'Link position';
-$string['modulename'] = 'NED Page';
+$string['modulename'] = 'Page Plus';
 $string['modulename_help'] = 'The page module enables a teacher to create a web page resource using the text editor. A page can display text, images, sound, video, web links and embedded code, such as Google maps.
 
 Advantages of using the page module rather than the file module include the resource being more accessible (for example to users of mobile devices) and easier to update.
@@ -65,7 +65,7 @@ A page may be used
 * To present the terms and conditions of a course or a summary of the course syllabus
 * To embed several videos or sound files together with some explanatory text';
 $string['modulename_link'] = 'mod/nedpageplus/view';
-$string['modulenameplural'] = 'NED Pages';
+$string['modulenameplural'] = 'Page Plus';
 $string['optionsheader'] = 'Display options';
 $string['page-mod-page-x'] = 'Any page module page';
 $string['page:addinstance'] = 'Add a new page resource';
@@ -81,6 +81,6 @@ $string['printheading'] = 'Display page name';
 $string['printheadingexplain'] = 'Display page name above content?';
 $string['printintro'] = 'Display page description';
 $string['printintroexplain'] = 'Display page description above content?';
-$string['search:activity'] = 'NED Page';
+$string['search:activity'] = 'Page Plus';
 $string['top'] = 'Top';
 $string['topbottom'] = 'Top + Bottom';

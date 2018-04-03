@@ -513,6 +513,13 @@ function nedpageplus_dndupload_handle($uploadinfo) {
 
     // Set the display options to the site defaults.
     $config = get_config('nedpageplus');
+    // Attachment.
+    $data->filedisplay = $config->filedisplay;
+    $data->filepopupheight = $config->filepopupheight;
+    $data->filepopupwidth = $config->filepopupwidth;
+    $data->fileprintheading = $config->fileprintheading;
+    $data->fileprintintro = $config->fileprintintro;
+    // Page.
     $data->display = $config->display;
     $data->popupheight = $config->popupheight;
     $data->popupwidth = $config->popupwidth;

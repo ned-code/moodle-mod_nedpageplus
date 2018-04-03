@@ -31,13 +31,22 @@ if ($ADMIN->fulltree) {
     $displayoptions = resourcelib_get_displayoptions(array(RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP));
     $defaultdisplayoptions = array(RESOURCELIB_DISPLAY_OPEN);
 
-    //--- general settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_configmultiselect('nedpageplus/displayoptions',
-        get_string('displayoptions', 'nedpageplus'), get_string('configdisplayoptions', 'nedpageplus'),
-        $defaultdisplayoptions, $displayoptions));
+    // Attachment
+    $settings->add(new admin_setting_heading('attachmentdefaults', get_string('attachmentbehaviour', 'nedpageplus'), ''));
 
-    //--- modedit defaults -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_heading('pagemodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
+    $settings->add(new admin_setting_configcheckbox('nedpageplus/fileprintheading',
+        get_string('printheading', 'nedpageplus'), get_string('printheadingexplain', 'nedpageplus'), 1));
+    $settings->add(new admin_setting_configcheckbox('nedpageplus/fileprintintro',
+        get_string('printintro', 'nedpageplus'), get_string('printintroexplain', 'nedpageplus'), 0));
+    $settings->add(new admin_setting_configselect('nedpageplus/filedisplay',
+        get_string('displayselect', 'nedpageplus'), get_string('displayselectexplain', 'nedpageplus'), RESOURCELIB_DISPLAY_OPEN, $displayoptions));
+    $settings->add(new admin_setting_configtext('nedpageplus/filepopupwidth',
+        get_string('popupwidth', 'nedpageplus'), get_string('popupwidthexplain', 'nedpageplus'), 620, PARAM_INT, 7));
+    $settings->add(new admin_setting_configtext('nedpageplus/filepopupheight',
+        get_string('popupheight', 'nedpageplus'), get_string('popupheightexplain', 'nedpageplus'), 450, PARAM_INT, 7));
+
+    // PAGE.
+    $settings->add(new admin_setting_heading('pagedefaults', get_string('pagebehaviour', 'nedpageplus'), ''));
 
     $settings->add(new admin_setting_configcheckbox('nedpageplus/printheading',
         get_string('printheading', 'nedpageplus'), get_string('printheadingexplain', 'nedpageplus'), 1));

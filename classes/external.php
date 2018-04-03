@@ -45,7 +45,7 @@ class mod_nedpageplus_external extends external_api {
      * @return external_function_parameters
      * @since Moodle 3.0
      */
-    public static function view_nedpageplus_parameters() {
+    public static function view_page_parameters() {
         return new external_function_parameters(
             array(
                 'pageid' => new external_value(PARAM_INT, 'page instance id')
@@ -65,7 +65,7 @@ class mod_nedpageplus_external extends external_api {
         global $DB, $CFG;
         require_once($CFG->dirroot . "/mod/nedpageplus/lib.php");
 
-        $params = self::validate_parameters(self::view_nedpageplus_parameters(),
+        $params = self::validate_parameters(self::view_page_parameters(),
                                             array(
                                                 'pageid' => $pageid
                                             ));
@@ -95,7 +95,7 @@ class mod_nedpageplus_external extends external_api {
      * @return external_description
      * @since Moodle 3.0
      */
-    public static function view_nedpageplus_returns() {
+    public static function view_page_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),

@@ -95,7 +95,7 @@ class mod_nedpageplus_mod_form extends moodleform_mod {
             $mform->setDefault('filedisplay', key($fileoptions));
         } else {
             $mform->addElement('select', 'filedisplay', get_string('displayselect', 'nedpageplus'), $fileoptions);
-            $mform->setDefault('filedisplay', $config->display);
+            $mform->setDefault('filedisplay', $config->filedisplay);
             $mform->addHelpButton('filedisplay', 'displayselect', 'nedpageplus');
         }
 
@@ -105,28 +105,30 @@ class mod_nedpageplus_mod_form extends moodleform_mod {
                 $mform->disabledIf('filepopupwidth', 'filedisplay', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
             $mform->setType('filepopupwidth', PARAM_INT);
-            $mform->setDefault('filepopupwidth', $config->popupwidth);
+            $mform->setDefault('filepopupwidth', $config->filepopupwidth);
 
             $mform->addElement('text', 'filepopupheight', get_string('popupheight', 'nedpageplus'), array('size'=>3));
             if (count($fileoptions) > 1) {
                 $mform->disabledIf('filepopupheight', 'filedisplay', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
             $mform->setType('filepopupheight', PARAM_INT);
-            $mform->setDefault('filepopupheight', $config->popupheight);
+            $mform->setDefault('filepopupheight', $config->filepopupheight);
         }
 
         $mform->addElement('advcheckbox', 'fileprintheading', get_string('printheading', 'nedpageplus'));
-        $mform->setDefault('fileprintheading', $config->printheading);
+        $mform->setDefault('fileprintheading', $config->fileprintheading);
         $mform->addElement('advcheckbox', 'fileprintintro', get_string('printintro', 'nedpageplus'));
-        $mform->setDefault('fileprintintro', $config->printintro);
+        $mform->setDefault('fileprintintro', $config->fileprintintro);
 
         //-------------------------------------------------------
         $mform->addElement('header', 'appearancehdr', get_string('pagebehaviour', 'nedpageplus'));
 
+        $defaultdisplayoptions = array(RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP);
+
         if ($this->current->instance) {
-            $options = resourcelib_get_displayoptions(explode(',', $config->displayoptions), $this->current->display);
+            $options = resourcelib_get_displayoptions($defaultdisplayoptions, $this->current->display);
         } else {
-            $options = resourcelib_get_displayoptions(explode(',', $config->displayoptions));
+            $options = resourcelib_get_displayoptions($defaultdisplayoptions);
         }
         if (count($options) == 1) {
             $mform->addElement('hidden', 'display');

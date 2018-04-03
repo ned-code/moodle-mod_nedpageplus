@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2018033100;
+$plugin->version   = 2018040300;
 $plugin->requires  = 2017110800;
 $plugin->component = 'mod_nedpageplus';
 $plugin->cron = 60;
