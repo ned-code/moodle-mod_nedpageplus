@@ -246,6 +246,14 @@ function nedpageplus_get_coursemodule_info($coursemodule) {
     }
 
     $info = new cached_cm_info();
+
+    $context = context_module::instance($coursemodule->id);
+    $fs = get_file_storage();
+    $files = $fs->get_area_files($context->id, 'mod_nedpageplus', 'attachment', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
+    $filelink = null;
+    if ($files) {
+        $info->icon = 'mod/nedpageplus/icon_hasfile';
+    }
     $info->name = $page->name;
 
     if ($coursemodule->showdescription) {
