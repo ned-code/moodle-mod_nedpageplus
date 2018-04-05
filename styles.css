@@ -1,7 +1,11 @@
 
 #page-mod-nedpageplus-view .attachment-wrapper-top {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     align-items: right;
 }
 #page-mod-nedpageplus-view .attachment-wrapper-top div {
@@ -12,6 +16,10 @@
     display: inline-block;
 }
 #page-mod-nedpageplus-view .attachment-wrapper-bottom {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
     justify-content: center;
     align-items: center;

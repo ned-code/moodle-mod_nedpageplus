@@ -252,7 +252,8 @@ function nedpageplus_get_coursemodule_info($coursemodule) {
     $files = $fs->get_area_files($context->id, 'mod_nedpageplus', 'attachment', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
     $filelink = null;
     if ($files) {
-        $info->icon = 'mod/nedpageplus/icon_hasfile';
+        $info->icon = 'icon_hasfile';
+        $info->iconcomponent = 'nedpageplus';
     }
     $info->name = $page->name;
 
