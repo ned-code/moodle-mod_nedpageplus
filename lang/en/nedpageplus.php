@@ -66,6 +66,8 @@ A page may be used
 * To embed several videos or sound files together with some explanatory text';
 $string['modulename_link'] = 'mod/nedpageplus/view';
 $string['modulenameplural'] = 'Page Plus';
+$string['nedpageplus:addinstance'] = 'Add a new Page Plus';
+$string['nedpageplus:view'] = 'View Page Plus';
 $string['optionsheader'] = 'Display options';
 $string['page-mod-page-x'] = 'Any page module page';
 $string['page:addinstance'] = 'Add a new page resource';
