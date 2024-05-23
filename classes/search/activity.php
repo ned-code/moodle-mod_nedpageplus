@@ -41,7 +41,7 @@ class activity extends \core_search\base_activity {
      * Overwriting base_activity method as page contents field is required,
      * description field is not.
      *
-     * @param stdClass $record
+     * @param \stdClass $record
      * @param array    $options
      * @return \core_search\document
      */

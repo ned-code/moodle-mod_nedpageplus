@@ -145,7 +145,10 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
                 break;
             }
         }
-        $enrol->enrol_user($instance2, $student->id, $studentrole->id);
+
+        if (!empty($instance2)){
+            $enrol->enrol_user($instance2, $student->id, $studentrole->id);
+        }
 
         self::setUser($student);
 

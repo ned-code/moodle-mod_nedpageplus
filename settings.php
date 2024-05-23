@@ -25,6 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+global $ADMIN;
 if ($ADMIN->fulltree) {
     require_once("$CFG->libdir/resourcelib.php");
 

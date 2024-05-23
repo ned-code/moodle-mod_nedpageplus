@@ -117,7 +117,6 @@ function nedpageplus_get_final_display_type($resource) {
  * @param object $cm
  * @param object $course
  * @param stored_file $file main file
- * @return does not return
  */
 function nedpageplus_print_workaround($resource, $cm, $course, $file) {
     global $CFG, $OUTPUT;
