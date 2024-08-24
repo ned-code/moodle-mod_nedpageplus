@@ -34,13 +34,13 @@ $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
 
 if ($p) {
     if (!$page = $DB->get_record('nedpageplus', array('id'=>$p))) {
-        print_error('invalidaccessparameter');
+        throw new \moodle_exception('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('nedpageplus', $page->id, $page->course, false, MUST_EXIST);
 
 } else {
     if (!$cm = get_coursemodule_from_id('nedpageplus', $id)) {
-        print_error('invalidcoursemodule');
+        throw new \moodle_exception('invalidcoursemodule');
     }
     $page = $DB->get_record('nedpageplus', array('id'=>$cm->instance), '*', MUST_EXIST);
 }
@@ -68,7 +68,7 @@ if ($files) {
     $displaytype = nedpageplus_get_final_display_type($page);
     if ($displaytype == RESOURCELIB_DISPLAY_POPUP) {
         $path = '/'.$file->get_contextid().'/mod_nedpageplus/attachment/'.$page->revision.$file->get_filepath().$file->get_filename();
-        $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
+        $fullurl = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
         $options = empty($page->filedisplayoptions) ? array() : unserialize($page->filedisplayoptions);
         $width  = empty($options['filepopupwidth'])  ? 620 : $options['filepopupwidth'];
         $height = empty($options['filepopupheight']) ? 450 : $options['filepopupheight'];

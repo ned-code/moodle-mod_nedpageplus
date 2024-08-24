@@ -129,8 +129,7 @@ function nedpageplus_print_workaround($resource, $cm, $course, $file) {
     echo '<div class="resourceworkaround">';
     switch (nedpageplus_get_final_display_type($resource)) {
         case RESOURCELIB_DISPLAY_POPUP:
-            $path = '/'.$file->get_contextid().'/mod_nedpageplus/attachment/'.$resource->revision.$file->get_filepath().$file->get_filename();
-            $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
+            $fullurl = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
             $options = empty($resource->filedisplayoptions) ? array() : unserialize($resource->filedisplayoptions);
             $width  = empty($options['filepopupwidth'])  ? 620 : $options['filepopupwidth'];
             $height = empty($options['filepopupheight']) ? 450 : $options['filepopupheight'];
@@ -291,8 +290,7 @@ function nedpageplus_get_clicktoopen($file, $revision, $extra='') {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_nedpageplus/attachment/'.$revision.$file->get_filepath().$file->get_filename();
-    $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
+    $fullurl = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
 
     $string = get_string('clicktoopen2', 'nedpageplus', "<a href=\"$fullurl\" $extra>$filename</a>");
 

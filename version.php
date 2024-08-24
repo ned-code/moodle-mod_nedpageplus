@@ -24,7 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2024052300;
-$plugin->requires  = 2017110800;
+$plugin->version  = 2024072200;    // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires = 2022112800.00;    // Moodle 4.1 (Build: 20221128)
+$plugin->release = '4.1.0.0.0';
 $plugin->component = 'mod_nedpageplus';
 $plugin->cron = 60;

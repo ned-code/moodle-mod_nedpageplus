@@ -36,14 +36,14 @@ $forceview = optional_param('forceview', 0, PARAM_BOOL);
 if ($r) {
     if (!$nedpageplus = $DB->get_record('nedpageplus', array('id'=>$r))) {
         nedpageplus_redirect_if_migrated($r, 0);
-        print_error('invalidaccessparameter');
+        throw new \moodle_exception('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('nedpageplus', $nedpageplus->id, $nedpageplus->course, false, MUST_EXIST);
 
 } else {
     if (!$cm = get_coursemodule_from_id('nedpageplus', $id)) {
         nedpageplus_redirect_if_migrated(0, $id);
-        print_error('invalidcoursemodule');
+        throw new \moodle_exception('invalidcoursemodule');
     }
     $nedpageplus = $DB->get_record('nedpageplus', array('id'=>$cm->instance), '*', MUST_EXIST);
 }

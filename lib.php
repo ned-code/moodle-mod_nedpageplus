@@ -443,22 +443,21 @@ function nedpageplus_nedpageplus_type_list($pagetype, $parentcontext, $currentco
  * @return array of file content
  */
 function nedpageplus_export_contents($cm, $baseurl) {
-    global $CFG, $DB;
+    global $CFG, $DB, $files;
     $contents = array();
     $context = context_module::instance($cm->id);
 
     $page = $DB->get_record('nedpageplus', array('id'=>$cm->instance), '*', MUST_EXIST);
+    $files = $files ?? [];
 
     // page contents
-    $fs = get_file_storage();
-    $files = $fs->get_area_files($context->id, 'mod_nedpageplus', 'content', 0, 'sortorder DESC, id ASC', false);
     foreach ($files as $fileinfo) {
         $file = array();
         $file['type']         = 'file';
         $file['filename']     = $fileinfo->get_filename();
         $file['filepath']     = $fileinfo->get_filepath();
         $file['filesize']     = $fileinfo->get_filesize();
-        $file['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl, '/'.$context->id.'/mod_nedpageplus/content/'.$page->revision.$fileinfo->get_filepath().$fileinfo->get_filename(), true);
+        $file['fileurl']      = \moodle_url::make_pluginfile_url($fileinfo->get_contextid(), $fileinfo->get_component(), $fileinfo->get_filearea(), $fileinfo->get_itemid(), $fileinfo->get_filepath(), $fileinfo->get_filename(), true);
         $file['timecreated']  = $fileinfo->get_timecreated();
         $file['timemodified'] = $fileinfo->get_timemodified();
         $file['sortorder']    = $fileinfo->get_sortorder();
@@ -475,12 +474,14 @@ function nedpageplus_export_contents($cm, $baseurl) {
 
     // page html conent
     $filename = 'index.html';
+    $fs = get_file_storage();
+    $file = $fs->get_file($context->id, 'mod_nedpageplus', 'content', 0, '/'.$context->id.'/mod_nedpageplus/content/', $filename);
     $pagefile = array();
     $pagefile['type']         = 'file';
     $pagefile['filename']     = $filename;
     $pagefile['filepath']     = '/';
     $pagefile['filesize']     = 0;
-    $pagefile['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl, '/'.$context->id.'/mod_nedpageplus/content/' . $filename, true);
+    $pagefile['fileurl']      = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename(), true);
     $pagefile['timecreated']  = null;
     $pagefile['timemodified'] = $page->timemodified;
     // make this file as main file
