@@ -44,7 +44,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_nedpageplus_upgrade($oldversion) {
+function xmldb_nedpageplus_upgrade($oldversion){
     global $CFG;
 
     // Moodle v3.1.0 release upgrade line.

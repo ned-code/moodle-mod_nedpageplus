@@ -16,9 +16,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   mod_nednedpageplusplus
+ * @package   mod_nedpageplus
  * @category  backup
- * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright 2010 onwards Eloy Lafuente (stronk7){@link http://stronk7.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,16 +31,16 @@
  */
 class restore_nedpageplus_activity_structure_step extends restore_activity_structure_step {
 
-    protected function define_structure() {
+    protected function define_structure(){
 
-        $paths = array();
+        $paths = [];
         $paths[] = new restore_path_element('nedpageplus', '/activity/nedpageplus');
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_nedpageplus($data) {
+    protected function process_nedpageplus($data){
         global $DB;
 
         $data = (object)$data;
@@ -56,7 +56,7 @@ class restore_nedpageplus_activity_structure_step extends restore_activity_struc
         $this->apply_activity_instance($newitemid);
     }
 
-    protected function after_execute() {
+    protected function after_execute(){
         // Add nedpageplus related files, no need to match by itemname (just internally handled context)
         $this->add_related_files('mod_nedpageplus', 'intro', null);
         $this->add_related_files('mod_nedpageplus', 'content', null);

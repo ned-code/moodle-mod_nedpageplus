@@ -43,19 +43,21 @@ class activity extends \core_search\base_activity {
      *
      * @param \stdClass $record
      * @param array    $options
-     * @return \core_search\document
+     *
+     * @return \core_search\document|false
+     * @noinspection PhpRedundantCatchClauseInspection
      */
-    public function get_document($record, $options = array()) {
+    public function get_document($record, $options = []){
 
         try {
             $cm = $this->get_cm($this->get_module_name(), $record->id, $record->course);
             $context = \context_module::instance($cm->id);
-        } catch (\dml_missing_record_exception $ex) {
+        } catch (\dml_missing_record_exception $ex){
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document, not all required data is available: ' .
                 $ex->getMessage(), DEBUG_DEVELOPER);
             return false;
-        } catch (\dml_exception $ex) {
+        } catch (\dml_exception $ex){
             // Notify it as we run here as admin, we should see everything.
             debugging('Error retrieving ' . $this->areaid . ' ' . $record->id . ' document: ' . $ex->getMessage(), DEBUG_DEVELOPER);
             return false;
@@ -79,7 +81,7 @@ class activity extends \core_search\base_activity {
      *
      * @return bool
      */
-    public function uses_file_indexing() {
+    public function uses_file_indexing(){
         return true;
     }
 
@@ -89,9 +91,8 @@ class activity extends \core_search\base_activity {
      *
      * @return array
      */
-    public function get_search_fileareas() {
-        $fileareas = array('intro', 'content'); // Fileareas.
-
-        return $fileareas;
+    public function get_search_fileareas(){
+        // Fileareas.
+        return ['intro', 'content'];
     }
 }

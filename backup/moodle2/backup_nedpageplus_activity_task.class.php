@@ -20,7 +20,7 @@
  *
  * @package   mod_nedpageplus
  * @category  backup
- * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright 2010 onwards Eloy Lafuente (stronk7){@link http://stronk7.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -36,13 +36,13 @@ class backup_nedpageplus_activity_task extends backup_activity_task {
     /**
      * No specific settings for this activity
      */
-    protected function define_my_settings() {
+    protected function define_my_settings(){
     }
 
     /**
      * Defines a backup step to store the instance data in the nedpageplus.xml file
      */
-    protected function define_my_steps() {
+    protected function define_my_steps(){
         $this->add_step(new backup_nedpageplus_activity_structure_step('nedpageplus_structure', 'nedpageplus.xml'));
     }
 
@@ -52,7 +52,7 @@ class backup_nedpageplus_activity_task extends backup_activity_task {
      * @param string $content some HTML text that eventually contains URLs to the activity instance scripts
      * @return string the content with the URLs encoded
      */
-    static public function encode_content_links($content) {
+    public static function encode_content_links($content){
         global $CFG;
 
         $base = preg_quote($CFG->wwwroot,"/");
@@ -63,8 +63,6 @@ class backup_nedpageplus_activity_task extends backup_activity_task {
 
         // Link to nedpageplus view by moduleid
         $search="/(".$base."\/mod\/nedpageplus\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@NEDPAGEPLUSVIEWBYID*$2@$', $content);
-
-        return $content;
+        return preg_replace($search, '$@NEDPAGEPLUSVIEWBYID*$2@$', $content);
     }
 }

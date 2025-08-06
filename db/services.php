@@ -26,24 +26,24 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$functions = array(
+$functions = [
 
-    'mod_nedpageplus_view_page' => array(
+    'mod_nedpageplus_view_page' => [
         'classname'     => 'mod_nedpageplus_external',
         'methodname'    => 'view_page',
         'description'   => 'Simulate the view.php web interface page: trigger events, completion, etc...',
         'type'          => 'write',
         'capabilities'  => 'mod/nedpageplus:view',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
-    ),
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE]
+    ],
 
-    'mod_nedpageplus_get_pages_by_courses' => array(
+    'mod_nedpageplus_get_pages_by_courses' => [
         'classname'     => 'mod_nedpageplus_external',
         'methodname'    => 'get_pages_by_courses',
         'description'   => 'Returns a list of pages in a provided list of courses, if no list is provided all pages that the user
                             can view will be returned.',
         'type'          => 'read',
         'capabilities'  => 'mod/nedpageplus:view',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
-    ),
-);
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+];

@@ -39,8 +39,11 @@ abstract class activity_base extends \core_analytics\local\indicator\community_o
      * No need to fetch grades for resources.
      *
      * @param \core_analytics\course $course
+     *
      * @return void
+     * @noinspection PhpOverridingMethodVisibilityInspection
      */
-    public function fetch_student_grades(\core_analytics\course $course) {
+    public function fetch_student_grades(\core_analytics\course $course){
+        return;
     }
 }

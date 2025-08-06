@@ -25,49 +25,39 @@ defined('MOODLE_INTERNAL') || die;
 
 /**
  * List of features supported in Page module
+ *
  * @param string $feature FEATURE_xx constant for requested feature
- * @return mixed True if module supports feature, false if not, null if doesn't know
+ *
+ * @return bool|int|null True if module supports feature, false if not, null if doesn't know
  */
-function nedpageplus_supports($feature) {
-    switch($feature) {
-        case FEATURE_MOD_ARCHETYPE:
-            return MOD_ARCHETYPE_RESOURCE;
-
-        case FEATURE_GROUPS:
-        case FEATURE_GROUPINGS:
-        case FEATURE_GRADE_HAS_GRADE:
-        case FEATURE_GRADE_OUTCOMES:
-            return false;
-
-        case FEATURE_BACKUP_MOODLE2:
-        case FEATURE_SHOW_DESCRIPTION:
-        case FEATURE_MOD_INTRO:
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
-            return true;
-
-        default: return null;
-    }
+function nedpageplus_supports($feature){
+    return match ($feature) {
+        FEATURE_MOD_ARCHETYPE => MOD_ARCHETYPE_RESOURCE,
+        FEATURE_GROUPS, FEATURE_GROUPINGS, FEATURE_GRADE_HAS_GRADE, FEATURE_GRADE_OUTCOMES => false,
+        FEATURE_BACKUP_MOODLE2, FEATURE_SHOW_DESCRIPTION, FEATURE_MOD_INTRO, FEATURE_COMPLETION_TRACKS_VIEWS => true,
+        default => null,
+    };
 }
 
 /**
  * Returns all other caps used in module
  * @return array
  */
-function nedpageplus_get_extra_capabilities() {
-    return array('moodle/site:accessallgroups');
+function nedpageplus_get_extra_capabilities(){
+    return ['moodle/site:accessallgroups'];
 }
 
 /**
  * This function is used by the reset_course_userdata function in moodlelib.
- * @param $data the data submitted from the reset course.
+ * @param object|array $data the data submitted from the reset course.
  * @return array status array
  */
-function nedpageplus_reset_userdata($data) {
+function nedpageplus_reset_userdata($data){
 
     // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
     // See MDL-9367.
 
-    return array();
+    return [];
 }
 
 /**
@@ -80,8 +70,8 @@ function nedpageplus_reset_userdata($data) {
  *
  * @return array
  */
-function nedpageplus_get_view_actions() {
-    return array('view','view all');
+function nedpageplus_get_view_actions(){
+    return ['view', 'view all'];
 }
 
 /**
@@ -94,8 +84,8 @@ function nedpageplus_get_view_actions() {
  *
  * @return array
  */
-function nedpageplus_get_post_actions() {
-    return array('update', 'add');
+function nedpageplus_get_post_actions(){
+    return ['update', 'add'];
 }
 
 /**
@@ -104,7 +94,7 @@ function nedpageplus_get_post_actions() {
  * @param mod_nedpageplus_mod_form $mform
  * @return int new page instance id
  */
-function nedpageplus_add_instance($data, $mform = null) {
+function nedpageplus_add_instance($data, $mform = null){
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
@@ -112,8 +102,8 @@ function nedpageplus_add_instance($data, $mform = null) {
 
     $data->timemodified = time();
     // File options.
-    $filedisplayoptions = array();
-    if ($data->filedisplay == RESOURCELIB_DISPLAY_POPUP) {
+    $filedisplayoptions = [];
+    if ($data->filedisplay == RESOURCELIB_DISPLAY_POPUP){
         $filedisplayoptions['filepopupwidth']  = $data->filepopupwidth;
         $filedisplayoptions['filepopupheight'] = $data->filepopupheight;
     }
@@ -121,8 +111,8 @@ function nedpageplus_add_instance($data, $mform = null) {
     $filedisplayoptions['fileprintintro']   = $data->fileprintintro;
     $data->filedisplayoptions = serialize($filedisplayoptions);
     // Page options.
-    $displayoptions = array();
-    if ($data->display == RESOURCELIB_DISPLAY_POPUP) {
+    $displayoptions = [];
+    if ($data->display == RESOURCELIB_DISPLAY_POPUP){
         $displayoptions['popupwidth']  = $data->popupwidth;
         $displayoptions['popupheight'] = $data->popupheight;
     }
@@ -130,7 +120,7 @@ function nedpageplus_add_instance($data, $mform = null) {
     $displayoptions['printintro']   = $data->printintro;
     $data->displayoptions = serialize($displayoptions);
 
-    if ($mform) {
+    if ($mform){
         $data->content       = $data->nedpageplus['text'];
         $data->contentformat = $data->nedpageplus['format'];
     }
@@ -140,10 +130,10 @@ function nedpageplus_add_instance($data, $mform = null) {
     nedpageplus_set_mainfile($data);
 
     // we need to use context now, so we need to make sure all needed info is already in db
-    $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
+    $DB->set_field('course_modules', 'instance', $data->id, ['id' =>$cmid]);
     $context = context_module::instance($cmid);
 
-    if ($mform and !empty($data->nedpageplus['itemid'])) {
+    if ($mform and !empty($data->nedpageplus['itemid'])){
         $draftitemid = $data->nedpageplus['itemid'];
         $data->content = file_save_draft_area_files($draftitemid, $context->id, 'mod_nedpageplus', 'content', 0, nedpageplus_get_editor_options($context), $data->content);
         $DB->update_record('nedpageplus', $data);
@@ -161,7 +151,7 @@ function nedpageplus_add_instance($data, $mform = null) {
  * @param object $mform
  * @return bool true
  */
-function nedpageplus_update_instance($data, $mform) {
+function nedpageplus_update_instance($data, $mform){
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
@@ -172,8 +162,8 @@ function nedpageplus_update_instance($data, $mform) {
     $data->id           = $data->instance;
     $data->revision++;
     // File options.
-    $filedisplayoptions = array();
-    if ($data->filedisplay == RESOURCELIB_DISPLAY_POPUP) {
+    $filedisplayoptions = [];
+    if ($data->filedisplay == RESOURCELIB_DISPLAY_POPUP){
         $filedisplayoptions['filepopupwidth']  = $data->filepopupwidth;
         $filedisplayoptions['filepopupheight'] = $data->filepopupheight;
     }
@@ -181,8 +171,8 @@ function nedpageplus_update_instance($data, $mform) {
     $filedisplayoptions['fileprintintro']   = $data->fileprintintro;
     $data->filedisplayoptions = serialize($filedisplayoptions);
     // Page options.
-    $displayoptions = array();
-    if ($data->display == RESOURCELIB_DISPLAY_POPUP) {
+    $displayoptions = [];
+    if ($data->display == RESOURCELIB_DISPLAY_POPUP){
         $displayoptions['popupwidth']  = $data->popupwidth;
         $displayoptions['popupheight'] = $data->popupheight;
     }
@@ -198,7 +188,7 @@ function nedpageplus_update_instance($data, $mform) {
     nedpageplus_set_mainfile($data);
 
     $context = context_module::instance($cmid);
-    if ($draftitemid) {
+    if ($draftitemid){
         $data->content = file_save_draft_area_files($draftitemid, $context->id, 'mod_nedpageplus', 'content', 0, nedpageplus_get_editor_options($context), $data->content);
         $DB->update_record('nedpageplus', $data);
     }
@@ -214,10 +204,10 @@ function nedpageplus_update_instance($data, $mform) {
  * @param int $id
  * @return bool true
  */
-function nedpageplus_delete_instance($id) {
+function nedpageplus_delete_instance($id){
     global $DB;
 
-    if (!$page = $DB->get_record('nedpageplus', array('id'=>$id))) {
+    if (!$page = $DB->get_record('nedpageplus', ['id' =>$id])){
         return false;
     }
 
@@ -226,7 +216,7 @@ function nedpageplus_delete_instance($id) {
 
     // note: all context files are deleted automatically
 
-    $DB->delete_records('nedpageplus', array('id'=>$page->id));
+    $DB->delete_records('nedpageplus', ['id' =>$page->id]);
 
     return true;
 }
@@ -241,12 +231,12 @@ function nedpageplus_delete_instance($id) {
  * @param stdClass $coursemodule
  * @return cached_cm_info Info to customise main page display
  */
-function nedpageplus_get_coursemodule_info($coursemodule) {
+function nedpageplus_get_coursemodule_info($coursemodule){
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
-    if (!$page = $DB->get_record('nedpageplus', array('id'=>$coursemodule->instance),
-            'id, name, display, displayoptions, intro, introformat')) {
+    if (!$page = $DB->get_record('nedpageplus', ['id' =>$coursemodule->instance],
+            'id, name, display, displayoptions, intro, introformat')){
         return NULL;
     }
 
@@ -256,23 +246,23 @@ function nedpageplus_get_coursemodule_info($coursemodule) {
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'mod_nedpageplus', 'attachment', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
     $filelink = null;
-    if ($files) {
+    if ($files){
         $info->icon = 'icon_hasfile';
         $info->iconcomponent = 'nedpageplus';
     }
     $info->name = $page->name;
 
-    if ($coursemodule->showdescription) {
+    if ($coursemodule->showdescription){
         // Convert intro to html. Do not filter cached version, filters run at display time.
         $info->content = format_module_intro('nedpageplus', $page, $coursemodule->id, false);
     }
 
-    if ($page->display != RESOURCELIB_DISPLAY_POPUP) {
+    if ($page->display != RESOURCELIB_DISPLAY_POPUP){
         return $info;
     }
 
     $fullurl = "$CFG->wwwroot/mod/nedpageplus/view.php?id=$coursemodule->id&amp;inpopup=1";
-    $options = empty($page->displayoptions) ? array() : unserialize($page->displayoptions);
+    $options = empty($page->displayoptions) ? [] : unserialize($page->displayoptions);
     $width  = empty($options['popupwidth'])  ? 620 : $options['popupwidth'];
     $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
     $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
@@ -292,8 +282,8 @@ function nedpageplus_get_coursemodule_info($coursemodule) {
  * @param stdClass $context context object
  * @return array
  */
-function nedpageplus_get_file_areas($course, $cm, $context) {
-    $areas = array();
+function nedpageplus_get_file_areas($course, $cm, $context){
+    $areas = [];
     $areas['content'] = get_string('content', 'nedpageplus');
     return $areas;
 }
@@ -303,34 +293,36 @@ function nedpageplus_get_file_areas($course, $cm, $context) {
  *
  * @package  mod_nedpageplus
  * @category files
- * @param stdClass $browser file browser instance
- * @param stdClass $areas file areas
- * @param stdClass $course course object
- * @param stdClass $cm course module object
- * @param stdClass $context context object
- * @param string $filearea file area
- * @param int $itemid item ID
- * @param string $filepath file path
- * @param string $filename file name
+ *
+ * @param stdClass|\file_browser $browser  file browser instance
+ * @param stdClass               $areas    file areas
+ * @param stdClass               $course   course object
+ * @param stdClass               $cm       course module object
+ * @param stdClass|\context      $context  context object
+ * @param string                 $filearea file area
+ * @param int                    $itemid   item ID
+ * @param string                 $filepath file path
+ * @param string                 $filename file name
+ *
  * @return file_info instance or null if not found
  */
-function nedpageplus_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+function nedpageplus_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename){
     global $CFG;
 
-    if (!has_capability('moodle/course:managefiles', $context)) {
+    if (!has_capability('moodle/course:managefiles', $context)){
         // students can not peak here!
         return null;
     }
 
     $fs = get_file_storage();
 
-    if ($filearea === 'content') {
+    if ($filearea === 'content'){
         $filepath = is_null($filepath) ? '/' : $filepath;
         $filename = is_null($filename) ? '.' : $filename;
 
         $urlbase = $CFG->wwwroot.'/pluginfile.php';
-        if (!$storedfile = $fs->get_file($context->id, 'mod_nedpageplus', 'content', 0, $filepath, $filename)) {
-            if ($filepath === '/' and $filename === '.') {
+        if (!$storedfile = $fs->get_file($context->id, 'mod_nedpageplus', 'content', 0, $filepath, $filename)){
+            if ($filepath === '/' and $filename === '.'){
                 $storedfile = new virtual_root_file($context->id, 'mod_nedpageplus', 'content', 0);
             } else {
                 // not found
@@ -351,54 +343,56 @@ function nedpageplus_get_file_info($browser, $areas, $course, $cm, $context, $fi
  *
  * @package  mod_nedpageplus
  * @category files
- * @param stdClass $course course object
- * @param stdClass $cm course module object
- * @param stdClass $context context object
- * @param string $filearea file area
- * @param array $args extra arguments
- * @param bool $forcedownload whether or not force download
- * @param array $options additional options affecting the file serving
+ *
+ * @param stdClass          $course        course object
+ * @param stdClass          $cm            course module object
+ * @param stdClass|\context $context       context object
+ * @param string            $filearea      file area
+ * @param array             $args          extra arguments
+ * @param bool              $forcedownload whether or not force download
+ * @param array             $options       additional options affecting the file serving
+ *
  * @return bool false if file not found, does not return if found - just send the file
  */
-function nedpageplus_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function nedpageplus_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options= []){
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
-    if ($context->contextlevel != CONTEXT_MODULE) {
+    if ($context->contextlevel != CONTEXT_MODULE){
         return false;
     }
 
     require_course_login($course, true, $cm);
-    if (!has_capability('mod/nedpageplus:view', $context)) {
+    if (!has_capability('mod/nedpageplus:view', $context)){
         return false;
     }
 
-    if ($filearea !== 'content' && $filearea !== 'attachment') {
+    if ($filearea !== 'content' && $filearea !== 'attachment'){
         // intro is handled automatically in pluginfile.php
         return false;
     }
 
     // $arg could be revision number or index.html
     $arg = array_shift($args);
-    if ($arg == 'index.html' || $arg == 'index.htm') {
+    if ($arg == 'index.html' || $arg == 'index.htm'){
         // serve page content
         $filename = $arg;
 
-        if (!$page = $DB->get_record('nedpageplus', array('id'=>$cm->instance), '*', MUST_EXIST)) {
+        if (!$page = $DB->get_record('nedpageplus', ['id' =>$cm->instance], '*', MUST_EXIST)){
             return false;
         }
 
         // We need to rewrite the pluginfile URLs so the media filters can work.
         $content = file_rewrite_pluginfile_urls($page->content, 'webservice/pluginfile.php', $context->id, 'mod_nedpageplus', 'content',
                                                 $page->revision);
-        $formatoptions = new stdClass;
+        $formatoptions = new stdClass();
         $formatoptions->noclean = true;
         $formatoptions->overflowdiv = true;
         $formatoptions->context = $context;
         $content = format_text($content, $page->contentformat, $formatoptions);
 
         // Remove @@PLUGINFILE@@/.
-        $options = array('reverse' => true);
+        $options = ['reverse' => true];
         $content = file_rewrite_pluginfile_urls($content, 'webservice/pluginfile.php', $context->id, 'mod_nedpageplus', 'content',
                                                 $page->revision, $options);
         $content = str_replace('@@PLUGINFILE@@/', '', $content);
@@ -408,12 +402,12 @@ function nedpageplus_pluginfile($course, $cm, $context, $filearea, $args, $force
         $fs = get_file_storage();
         $relativepath = implode('/', $args);
         $fullpath = "/$context->id/mod_nedpageplus/$filearea/0/$relativepath";
-        if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
-            $page = $DB->get_record('nedpageplus', array('id'=>$cm->instance), 'id, legacyfiles', MUST_EXIST);
-            if ($page->legacyfiles != RESOURCELIB_LEGACYFILES_ACTIVE) {
+        if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()){
+            $page = $DB->get_record('nedpageplus', ['id' =>$cm->instance], 'id, legacyfiles', MUST_EXIST);
+            if ($page->legacyfiles != RESOURCELIB_LEGACYFILES_ACTIVE){
                 return false;
             }
-            if (!$file = resourcelib_try_file_migration('/'.$relativepath, $cm->id, $cm->course, 'mod_nedpageplus', 'content', 0)) {
+            if (!$file = resourcelib_try_file_migration('/'.$relativepath, $cm->id, $cm->course, 'mod_nedpageplus', 'content', 0)){
                 return false;
             }
             //file migrate - update flag
@@ -424,6 +418,7 @@ function nedpageplus_pluginfile($course, $cm, $context, $filearea, $args, $force
         // finally send the file
         send_stored_file($file, null, 0, $forcedownload, $options);
     }
+    return true;
 }
 
 /**
@@ -432,9 +427,8 @@ function nedpageplus_pluginfile($course, $cm, $context, $filearea, $args, $force
  * @param stdClass $parentcontext Block's parent context
  * @param stdClass $currentcontext Current context of block
  */
-function nedpageplus_nedpageplus_type_list($pagetype, $parentcontext, $currentcontext) {
-    $module_pagetype = array('mod-page-*'=>get_string('page-mod-page-x', 'nedpageplus'));
-    return $module_pagetype;
+function nedpageplus_nedpageplus_type_list($pagetype, $parentcontext, $currentcontext){
+    return ['mod-page-*' =>get_string('page-mod-page-x', 'nedpageplus')];
 }
 
 /**
@@ -442,17 +436,17 @@ function nedpageplus_nedpageplus_type_list($pagetype, $parentcontext, $currentco
  *
  * @return array of file content
  */
-function nedpageplus_export_contents($cm, $baseurl) {
+function nedpageplus_export_contents($cm, $baseurl){
     global $CFG, $DB, $files;
-    $contents = array();
+    $contents = [];
     $context = context_module::instance($cm->id);
 
-    $page = $DB->get_record('nedpageplus', array('id'=>$cm->instance), '*', MUST_EXIST);
+    $page = $DB->get_record('nedpageplus', ['id' =>$cm->instance], '*', MUST_EXIST);
     $files = $files ?? [];
 
     // page contents
-    foreach ($files as $fileinfo) {
-        $file = array();
+    foreach ($files as $fileinfo){
+        $file = [];
         $file['type']         = 'file';
         $file['filename']     = $fileinfo->get_filename();
         $file['filepath']     = $fileinfo->get_filepath();
@@ -466,7 +460,7 @@ function nedpageplus_export_contents($cm, $baseurl) {
         $file['license']      = $fileinfo->get_license();
         $file['mimetype']     = $fileinfo->get_mimetype();
         $file['isexternalfile'] = $fileinfo->is_external_file();
-        if ($file['isexternalfile']) {
+        if ($file['isexternalfile']){
             $file['repositorytype'] = $fileinfo->get_repository_type();
         }
         $contents[] = $file;
@@ -476,7 +470,7 @@ function nedpageplus_export_contents($cm, $baseurl) {
     $filename = 'index.html';
     $fs = get_file_storage();
     $file = $fs->get_file($context->id, 'mod_nedpageplus', 'content', 0, '/'.$context->id.'/mod_nedpageplus/content/', $filename);
-    $pagefile = array();
+    $pagefile = [];
     $pagefile['type']         = 'file';
     $pagefile['filename']     = $filename;
     $pagefile['filepath']     = '/';
@@ -498,11 +492,13 @@ function nedpageplus_export_contents($cm, $baseurl) {
  * Register the ability to handle drag and drop file uploads
  * @return array containing details of the files / types the mod can handle
  */
-function nedpageplus_dndupload_register() {
-    return array('types' => array(
-                     array('identifier' => 'text/html', 'message' => get_string('createpage', 'nedpageplus')),
-                     array('identifier' => 'text', 'message' => get_string('createpage', 'nedpageplus'))
-                 ));
+function nedpageplus_dndupload_register(){
+    return [
+        'types' => [
+            ['identifier' => 'text/html', 'message' => get_string('createpage', 'nedpageplus')],
+            ['identifier' => 'text', 'message' => get_string('createpage', 'nedpageplus')]
+        ]
+    ];
 }
 
 /**
@@ -510,14 +506,14 @@ function nedpageplus_dndupload_register() {
  * @param object $uploadinfo details of the file / content that has been uploaded
  * @return int instance id of the newly created mod
  */
-function nedpageplus_dndupload_handle($uploadinfo) {
+function nedpageplus_dndupload_handle($uploadinfo){
     // Gather the required info.
     $data = new stdClass();
     $data->course = $uploadinfo->course->id;
     $data->name = $uploadinfo->displayname;
     $data->intro = '<p>'.$uploadinfo->displayname.'</p>';
     $data->introformat = FORMAT_HTML;
-    if ($uploadinfo->type == 'text/html') {
+    if ($uploadinfo->type == 'text/html'){
         $data->contentformat = FORMAT_HTML;
         $data->content = clean_param($uploadinfo->content, PARAM_CLEANHTML);
     } else {
@@ -553,13 +549,13 @@ function nedpageplus_dndupload_handle($uploadinfo) {
  * @param  stdClass $context    context object
  * @since Moodle 3.0
  */
-function nedpageplus_view($page, $course, $cm, $context) {
+function nedpageplus_view($page, $course, $cm, $context){
 
     // Trigger course_module_viewed event.
-    $params = array(
+    $params = [
         'context' => $context,
         'objectid' => $page->id
-    );
+    ];
 
     $event = \mod_nedpageplus\event\course_module_viewed::create($params);
     $event->add_record_snapshot('course_modules', $cm);
@@ -581,9 +577,8 @@ function nedpageplus_view($page, $course, $cm, $context) {
  * @return stdClass an object with the different type of areas indicating if they were updated or not
  * @since Moodle 3.2
  */
-function nedpageplus_check_updates_since(cm_info $cm, $from, $filter = array()) {
-    $updates = course_check_module_updates_since($cm, $from, array('content'), $filter);
-    return $updates;
+function nedpageplus_check_updates_since(cm_info $cm, $from, $filter = []){
+    return course_check_module_updates_since($cm, $from, ['content'], $filter);
 }
 
 /**
@@ -597,14 +592,14 @@ function nedpageplus_check_updates_since(cm_info $cm, $from, $filter = array()) 
  * @return \core_calendar\local\event\entities\action_interface|null
  */
 function mod_nedpageplus_core_calendar_provide_event_action(calendar_event $event,
-                                                      \core_calendar\action_factory $factory) {
+                                                      \core_calendar\action_factory $factory){
     $cm = get_fast_modinfo($event->courseid)->instances['nedpageplus'][$event->instance];
 
     $completion = new \completion_info($cm->get_course());
 
     $completiondata = $completion->get_data($cm, false);
 
-    if ($completiondata->completionstate != COMPLETION_INCOMPLETE) {
+    if ($completiondata->completionstate != COMPLETION_INCOMPLETE){
         return null;
     }
 

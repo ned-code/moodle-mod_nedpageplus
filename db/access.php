@@ -24,25 +24,25 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$capabilities = array(
-    'mod/nedpageplus:view' => array(
+$capabilities = [
+    'mod/nedpageplus:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
+        'archetypes' => [
             'guest' => CAP_ALLOW,
             'user' => CAP_ALLOW,
-        )
-    ),
+        ]
+    ],
 
-    'mod/nedpageplus:addinstance' => array(
+    'mod/nedpageplus:addinstance' => [
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
-        ),
+        ],
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
-);
+    ],
+];

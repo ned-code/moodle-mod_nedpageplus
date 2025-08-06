@@ -46,11 +46,11 @@ class social_breadth extends activity_base {
         return new \lang_string('indicator:socialbreadth', 'mod_nedpageplus');
     }
 
-    public function get_indicator_type() {
+    public function get_indicator_type(){
         return self::INDICATOR_SOCIAL;
     }
 
-    public function get_social_breadth_level(\cm_info $cm) {
+    public function get_social_breadth_level(\cm_info $cm){
         return self::SOCIAL_LEVEL_1;
     }
 }

@@ -44,7 +44,7 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
     /**
      * Test view_page
      */
-    public function test_view_page() {
+    public function test_view_page(){
         global $DB;
 
         $this->resetAfterTest(true);
@@ -59,7 +59,7 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
         try {
             mod_nedpageplus_external::view_page(0);
             $this->fail('Exception expected due to invalid mod_nedpageplus instance id.');
-        } catch (moodle_exception $e) {
+        } catch (moodle_exception $e){
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
 
@@ -69,7 +69,7 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
         try {
             mod_nedpageplus_external::view_page($page->id);
             $this->fail('Exception expected due to not enrolled user.');
-        } catch (moodle_exception $e) {
+        } catch (moodle_exception $e){
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -105,7 +105,7 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
         try {
             mod_nedpageplus_external::view_page($page->id);
             $this->fail('Exception expected due to missing capability.');
-        } catch (moodle_exception $e) {
+        } catch (moodle_exception $e){
             $this->assertEquals('requireloginerror', $e->errorcode);
         }
 
@@ -114,7 +114,7 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
     /**
      * Test test_mod_nedpageplus_get_pages_by_courses
      */
-    public function test_mod_nedpageplus_get_pages_by_courses() {
+    public function test_mod_nedpageplus_get_pages_by_courses(){
         global $DB;
 
         $this->resetAfterTest(true);
@@ -139,8 +139,8 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
         // Execute real Moodle enrolment as we'll call unenrol() method on the instance later.
         $enrol = enrol_get_plugin('manual');
         $enrolinstances = enrol_get_instances($course2->id, true);
-        foreach ($enrolinstances as $courseenrolinstance) {
-            if ($courseenrolinstance->enrol == "manual") {
+        foreach ($enrolinstances as $courseenrolinstance){
+            if ($courseenrolinstance->enrol == "manual"){
                 $instance2 = $courseenrolinstance;
                 break;
             }
@@ -180,7 +180,7 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
         $page2->introfiles = [];
         $page2->contentfiles = [];
 
-        foreach ($expectedfields as $field) {
+        foreach ($expectedfields as $field){
             $expected1[$field] = $page1->{$field};
             $expected2[$field] = $page2->{$field};
         }
@@ -221,8 +221,10 @@ class mod_nedpageplus_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals($filename, $result['pages'][0]['introfiles'][0]['filename']);
 
         // Unenrol user from second course.
-        $enrol->unenrol_user($instance2, $student->id);
-        array_shift($expectedpages);
+        if (!empty($instance2)){
+            $enrol->unenrol_user($instance2, $student->id);
+            array_shift($expectedpages);
+        }
 
         // Call the external function without passing course id.
         $result = mod_nedpageplus_external::get_pages_by_courses();

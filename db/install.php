@@ -30,7 +30,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_nedpageplus_install() {
+function xmldb_nedpageplus_install(){
     global $CFG;
 
 }

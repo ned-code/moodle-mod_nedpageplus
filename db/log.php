@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$logs = array(
-    array('module'=>'nedpageplus', 'action'=>'view', 'mtable'=>'nedpageplus', 'field'=>'name'),
-    array('module'=>'nedpageplus', 'action'=>'view all', 'mtable'=>'nedpageplus', 'field'=>'name'),
-    array('module'=>'nedpageplus', 'action'=>'update', 'mtable'=>'nedpageplus', 'field'=>'name'),
-    array('module'=>'nedpageplus', 'action'=>'add', 'mtable'=>'nedpageplus', 'field'=>'name'),
-);
+$logs = [
+    ['module' =>'nedpageplus', 'action' =>'view', 'mtable' =>'nedpageplus', 'field' =>'name'],
+    ['module' =>'nedpageplus', 'action' =>'view all', 'mtable' =>'nedpageplus', 'field' =>'name'],
+    ['module' =>'nedpageplus', 'action' =>'update', 'mtable' =>'nedpageplus', 'field' =>'name'],
+    ['module' =>'nedpageplus', 'action' =>'add', 'mtable' =>'nedpageplus', 'field' =>'name'],
+];

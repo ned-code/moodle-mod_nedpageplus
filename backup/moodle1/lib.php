@@ -37,23 +37,24 @@ class moodle1_mod_nedpageplus_handler extends moodle1_resource_successor_handler
      * Converts /MOODLE_BACKUP/COURSE/MODULES/MOD/RESOURCE data
      * Called by moodle1_mod_resource_handler::process_resource()
      */
-    public function process_legacy_resource(array $data, array $raw = null) {
+    public function process_legacy_resource(array $data, array $raw = null){
 
         // get the course module id and context id
         $instanceid = $data['id'];
+        /** @var array $cminfo (error type in get_cminfo() PHPDoc) */
         $cminfo     = $this->get_cminfo($instanceid, 'resource');
         $moduleid   = $cminfo['id'];
         $contextid  = $this->converter->get_contextid(CONTEXT_MODULE, $moduleid);
 
         // convert the legacy data onto the new page record
-        $page                       = array();
+        $page                       = [];
         $page['id']                 = $data['id'];
         $page['name']               = $data['name'];
         $page['intro']              = $data['intro'];
         $page['introformat']        = $data['introformat'];
         $page['content']            = $data['alltext'];
 
-        if ($data['type'] === 'html') {
+        if ($data['type'] === 'html'){
             // legacy Resource of the type Web page
             $page['contentformat'] = FORMAT_HTML;
 
@@ -61,7 +62,7 @@ class moodle1_mod_nedpageplus_handler extends moodle1_resource_successor_handler
             // legacy Resource of the type Plain text page
             $page['contentformat'] = (int)$data['reference'];
 
-            if ($page['contentformat'] < 0 or $page['contentformat'] > 4) {
+            if ($page['contentformat'] < 0 or $page['contentformat'] > 4){
                 $page['contentformat'] = FORMAT_MOODLE;
             }
         }
@@ -72,13 +73,13 @@ class moodle1_mod_nedpageplus_handler extends moodle1_resource_successor_handler
         $page['timemodified']       = $data['timemodified'];
 
         // populate display and displayoptions fields
-        $options = array('printheading' => 1, 'printintro' => 0);
-        if ($data['popup']) {
+        $options = ['printheading' => 1, 'printintro' => 0];
+        if ($data['popup']){
             $page['display'] = RESOURCELIB_DISPLAY_POPUP;
             $rawoptions = explode(',', $data['popup']);
-            foreach ($rawoptions as $rawoption) {
+            foreach ($rawoptions as $rawoption){
                 list($name, $value) = explode('=', trim($rawoption), 2);
-                if ($value > 0 and ($name == 'width' or $name == 'height')) {
+                if ($value > 0 and ($name == 'width' or $name == 'height')){
                     $options['popup'.$name] = $value;
                     continue;
                 }
@@ -103,9 +104,11 @@ class moodle1_mod_nedpageplus_handler extends moodle1_resource_successor_handler
 
         // write nedpageplus.xml
         $this->open_xml_writer("activities/nedpageplus_{$moduleid}/nedpageplus.xml");
-        $this->xmlwriter->begin_tag('activity', array('id' => $instanceid, 'moduleid' => $moduleid,
-            'modulename' => 'nedpageplus', 'contextid' => $contextid));
-        $this->write_xml('nedpageplus', $page, array('/nedpageplus/id'));
+        $this->xmlwriter->begin_tag('activity', [
+            'id'         => $instanceid, 'moduleid' => $moduleid,
+            'modulename' => 'nedpageplus', 'contextid' => $contextid
+        ]);
+        $this->write_xml('nedpageplus', $page, ['/nedpageplus/id']);
         $this->xmlwriter->end_tag('activity');
         $this->close_xml_writer();
 
@@ -113,8 +116,8 @@ class moodle1_mod_nedpageplus_handler extends moodle1_resource_successor_handler
         $this->open_xml_writer("activities/nedpageplus_{$moduleid}/inforef.xml");
         $this->xmlwriter->begin_tag('inforef');
         $this->xmlwriter->begin_tag('fileref');
-        foreach ($this->fileman->get_fileids() as $fileid) {
-            $this->write_xml('file', array('id' => $fileid));
+        foreach ($this->fileman->get_fileids() as $fileid){
+            $this->write_xml('file', ['id' => $fileid]);
         }
         $this->xmlwriter->end_tag('fileref');
         $this->xmlwriter->end_tag('inforef');

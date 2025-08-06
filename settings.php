@@ -26,11 +26,11 @@
 defined('MOODLE_INTERNAL') || die;
 
 global $ADMIN;
-if ($ADMIN->fulltree) {
+if ($ADMIN->fulltree){
     require_once("$CFG->libdir/resourcelib.php");
 
-    $displayoptions = resourcelib_get_displayoptions(array(RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP));
-    $defaultdisplayoptions = array(RESOURCELIB_DISPLAY_OPEN);
+    $displayoptions = resourcelib_get_displayoptions([RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP]);
+    $defaultdisplayoptions = [RESOURCELIB_DISPLAY_OPEN];
 
     // Attachment
     $settings->add(new admin_setting_heading('attachmentdefaults', get_string('attachmentbehaviour', 'nedpageplus'), ''));

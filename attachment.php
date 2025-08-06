@@ -33,22 +33,20 @@ $r        = optional_param('r', 0, PARAM_INT);  // Resource instance ID
 $redirect = optional_param('redirect', 0, PARAM_BOOL);
 $forceview = optional_param('forceview', 0, PARAM_BOOL);
 
-if ($r) {
-    if (!$nedpageplus = $DB->get_record('nedpageplus', array('id'=>$r))) {
-        nedpageplus_redirect_if_migrated($r, 0);
+if ($r){
+    if (!$nedpageplus = $DB->get_record('nedpageplus', ['id' =>$r])){
         throw new \moodle_exception('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('nedpageplus', $nedpageplus->id, $nedpageplus->course, false, MUST_EXIST);
 
 } else {
-    if (!$cm = get_coursemodule_from_id('nedpageplus', $id)) {
-        nedpageplus_redirect_if_migrated(0, $id);
+    if (!$cm = get_coursemodule_from_id('nedpageplus', $id)){
         throw new \moodle_exception('invalidcoursemodule');
     }
-    $nedpageplus = $DB->get_record('nedpageplus', array('id'=>$cm->instance), '*', MUST_EXIST);
+    $nedpageplus = $DB->get_record('nedpageplus', ['id' =>$cm->instance], '*', MUST_EXIST);
 }
 
-$course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' =>$cm->course], '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
@@ -57,12 +55,12 @@ require_capability('mod/nedpageplus:view', $context);
 // Completion and trigger events.
 nedpageplus_view($nedpageplus, $course, $cm, $context);
 
-$PAGE->set_url('/mod/nedpageplus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/nedpageplus/view.php', ['id' => $cm->id]);
 
 $fs = get_file_storage();
 $files = $fs->get_area_files($context->id, 'mod_nedpageplus', 'attachment', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
-if (count($files) < 1) {
-    nedpageplus_print_filenotfound($nedpageplus, $cm, $course);
+if (count($files) < 1){
+    \send_file_not_found();
     die;
 } else {
     $file = reset($files);
@@ -71,18 +69,18 @@ if (count($files) < 1) {
 
 $nedpageplus->mainfile = $file->get_filename();
 $displaytype = nedpageplus_get_final_display_type($nedpageplus);
-if ($displaytype == RESOURCELIB_DISPLAY_OPEN || $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD) {
+if ($displaytype == RESOURCELIB_DISPLAY_OPEN || $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD){
     $redirect = true;
 }
 
 // Don't redirect teachers, otherwise they can not access course or module settings.
 if ($redirect && !course_get_format($course)->has_view_page() &&
         (has_capability('moodle/course:manageactivities', $context) ||
-        has_capability('moodle/course:update', context_course::instance($course->id)))) {
+        has_capability('moodle/course:update', context_course::instance($course->id)))){
     $redirect = false;
 }
 
-if ($redirect && !$forceview) {
+if ($redirect && !$forceview){
     // coming from course page or url index page
     // this redirect trick solves caching problems when tracking views ;-)
     $path = '/'.$context->id.'/mod_nedpageplus/attachment/'.$nedpageplus->revision.$file->get_filepath().$file->get_filename();
@@ -90,14 +88,4 @@ if ($redirect && !$forceview) {
     redirect($fullurl);
 }
 
-switch ($displaytype) {
-    case RESOURCELIB_DISPLAY_EMBED:
-        nedpageplus_display_embed($nedpageplus, $cm, $course, $file);
-        break;
-    case RESOURCELIB_DISPLAY_FRAME:
-        nedpageplus_display_frame($nedpageplus, $cm, $course, $file);
-        break;
-    default:
-        nedpageplus_print_workaround($nedpageplus, $cm, $course, $file);
-        break;
-}
+nedpageplus_print_workaround($nedpageplus, $cm, $course, $file);

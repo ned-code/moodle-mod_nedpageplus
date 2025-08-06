@@ -45,11 +45,11 @@ class mod_nedpageplus_external extends external_api {
      * @return external_function_parameters
      * @since Moodle 3.0
      */
-    public static function view_page_parameters() {
+    public static function view_page_parameters(){
         return new external_function_parameters(
-            array(
+            [
                 'pageid' => new external_value(PARAM_INT, 'page instance id')
-            )
+            ]
         );
     }
 
@@ -61,18 +61,18 @@ class mod_nedpageplus_external extends external_api {
      * @since Moodle 3.0
      * @throws moodle_exception
      */
-    public static function view_page($pageid) {
+    public static function view_page($pageid){
         global $DB, $CFG;
         require_once($CFG->dirroot . "/mod/nedpageplus/lib.php");
 
         $params = self::validate_parameters(self::view_page_parameters(),
-                                            array(
+                                            [
                                                 'pageid' => $pageid
-                                            ));
-        $warnings = array();
+                                            ]);
+        $warnings = [];
 
         // Request and permission validation.
-        $page = $DB->get_record('nedpageplus', array('id' => $params['pageid']), '*', MUST_EXIST);
+        $page = $DB->get_record('nedpageplus', ['id' => $params['pageid']], '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($page, 'nedpageplus');
 
         $context = context_module::instance($cm->id);
@@ -83,7 +83,7 @@ class mod_nedpageplus_external extends external_api {
         // Call the nedpageplus/lib API.
         nedpageplus_view($page, $course, $cm, $context);
 
-        $result = array();
+        $result = [];
         $result['status'] = true;
         $result['warnings'] = $warnings;
         return $result;
@@ -95,12 +95,12 @@ class mod_nedpageplus_external extends external_api {
      * @return external_description
      * @since Moodle 3.0
      */
-    public static function view_page_returns() {
+    public static function view_page_returns(){
         return new external_single_structure(
-            array(
+            [
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),
                 'warnings' => new external_warnings()
-            )
+            ]
         );
     }
 
@@ -110,13 +110,13 @@ class mod_nedpageplus_external extends external_api {
      * @return external_function_parameters
      * @since Moodle 3.3
      */
-    public static function get_pages_by_courses_parameters() {
+    public static function get_pages_by_courses_parameters(){
         return new external_function_parameters (
-            array(
+            [
                 'courseids' => new external_multiple_structure(
-                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, array()
+                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, []
                 ),
-            )
+            ]
         );
     }
 
@@ -128,41 +128,41 @@ class mod_nedpageplus_external extends external_api {
      * @return array of warnings and pages
      * @since Moodle 3.3
      */
-    public static function get_pages_by_courses($courseids = array()) {
+    public static function get_pages_by_courses($courseids = []){
 
-        $warnings = array();
-        $returnedpages = array();
+        $warnings = [];
+        $returnedpages = [];
 
-        $params = array(
+        $params = [
             'courseids' => $courseids,
-        );
+        ];
         $params = self::validate_parameters(self::get_pages_by_courses_parameters(), $params);
 
-        $mycourses = array();
-        if (empty($params['courseids'])) {
+        $mycourses = [];
+        if (empty($params['courseids'])){
             $mycourses = enrol_get_my_courses();
             $params['courseids'] = array_keys($mycourses);
         }
 
         // Ensure there are courseids to loop through.
-        if (!empty($params['courseids'])) {
+        if (!empty($params['courseids'])){
 
-            list($courses, $warnings) = external_util::validate_courses($params['courseids'], $mycourses);
+            [$courses, $warnings] = external_util::validate_courses($params['courseids'], $mycourses);
 
             // Get the pages in this course, this function checks users visibility permissions.
             // We can avoid then additional validate_context calls.
             $pages = get_all_instances_in_courses("page", $courses);
-            foreach ($pages as $page) {
+            foreach ($pages as $page){
                 $context = context_module::instance($page->coursemodule);
                 // Entry to return.
                 $page->name = external_format_string($page->name, $context->id);
 
-                list($page->intro, $page->introformat) = external_format_text($page->intro,
+                [$page->intro, $page->introformat] = external_format_text($page->intro,
                                                                 $page->introformat, $context->id, 'mod_nedpageplus', 'intro', null);
                 $page->introfiles = external_util::get_area_files($context->id, 'mod_nedpageplus', 'intro', false, false);
 
-                $options = array('noclean' => true);
-                list($page->content, $page->contentformat) = external_format_text($page->content, $page->contentformat,
+                $options = ['noclean' => true];
+                [$page->content, $page->contentformat] = external_format_text($page->content, $page->contentformat,
                                                                 $context->id, 'mod_nedpageplus', 'content', $page->revision, $options);
                 $page->contentfiles = external_util::get_area_files($context->id, 'mod_nedpageplus', 'content');
 
@@ -170,11 +170,10 @@ class mod_nedpageplus_external extends external_api {
             }
         }
 
-        $result = array(
-            'pages' => $returnedpages,
+        return [
+            'pages'    => $returnedpages,
             'warnings' => $warnings
-        );
-        return $result;
+        ];
     }
 
     /**
@@ -183,12 +182,12 @@ class mod_nedpageplus_external extends external_api {
      * @return external_single_structure
      * @since Moodle 3.3
      */
-    public static function get_pages_by_courses_returns() {
+    public static function get_pages_by_courses_returns(){
         return new external_single_structure(
-            array(
+            [
                 'pages' => new external_multiple_structure(
                     new external_single_structure(
-                        array(
+                        [
                             'id' => new external_value(PARAM_INT, 'Module id'),
                             'coursemodule' => new external_value(PARAM_INT, 'Course module id'),
                             'course' => new external_value(PARAM_INT, 'Course id'),
@@ -209,11 +208,11 @@ class mod_nedpageplus_external extends external_api {
                             'visible' => new external_value(PARAM_INT, 'Module visibility'),
                             'groupmode' => new external_value(PARAM_INT, 'Group mode'),
                             'groupingid' => new external_value(PARAM_INT, 'Grouping id'),
-                        )
+                        ]
                     )
                 ),
                 'warnings' => new external_warnings(),
-            )
+            ]
         );
     }
 }

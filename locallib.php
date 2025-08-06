@@ -25,57 +25,56 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-define('NEDPAGEPLUS_TOP', 1);
-define('NEDPAGEPLUS_BOTTOM', 2);
-define('NEDPAGEPLUS_BOTH', 3);
+const NEDPAGEPLUS_TOP = 1;
+const NEDPAGEPLUS_BOTTOM = 2;
+const NEDPAGEPLUS_BOTH = 3;
 
 require_once("$CFG->libdir/filelib.php");
 require_once("$CFG->libdir/resourcelib.php");
 require_once("$CFG->dirroot/mod/nedpageplus/lib.php");
 
-
 /**
  * File browsing support class
  */
 class nedpageplus_content_file_info extends file_info_stored {
-    public function get_parent() {
-        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
+    public function get_parent(){
+        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.'){
             return $this->browser->get_file_info($this->context);
         }
         return parent::get_parent();
     }
-    public function get_visible_name() {
-        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
+    public function get_visible_name(){
+        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.'){
             return $this->topvisiblename;
         }
         return parent::get_visible_name();
     }
 }
 
-function nedpageplus_get_editor_options($context) {
+function nedpageplus_get_editor_options($context){
     global $CFG;
-    return array('subdirs'=>1, 'maxbytes'=>$CFG->maxbytes, 'maxfiles'=>-1, 'changeformat'=>1, 'context'=>$context, 'noclean'=>1, 'trusttext'=>0);
+    return ['subdirs' =>1, 'maxbytes' =>$CFG->maxbytes, 'maxfiles' =>-1, 'changeformat' =>1, 'context' =>$context, 'noclean' =>1, 'trusttext' =>0];
 }
 
-function nedpageplus_set_mainfile($data) {
+function nedpageplus_set_mainfile($data){
     global $DB;
     $fs = get_file_storage();
     $cmid = $data->coursemodule;
     $draftitemid = $data->files;
 
     $context = context_module::instance($cmid);
-    if ($draftitemid) {
-        $options = array(
+    if ($draftitemid){
+        $options = [
             'subdirs' => true,
             'embed' => false
-        );
-        if ($data->display == RESOURCELIB_DISPLAY_EMBED) {
+        ];
+        if ($data->display == RESOURCELIB_DISPLAY_EMBED){
             $options['embed'] = true;
         }
         file_save_draft_area_files($draftitemid, $context->id, 'mod_nedpageplus', 'attachment', 0, $options);
     }
     $files = $fs->get_area_files($context->id, 'mod_nedpageplus', 'attachment', 0, 'sortorder', false);
-    if (count($files) == 1) {
+    if (count($files) == 1){
         // only one file attached, set it as main file automatically
         $file = reset($files);
         file_set_sortorder($context->id, 'mod_nedpageplus', 'attachment', 0, $file->get_filepath(), $file->get_filename(), 1);
@@ -87,23 +86,23 @@ function nedpageplus_set_mainfile($data) {
  * @param object $resource
  * @return int display type constant
  */
-function nedpageplus_get_final_display_type($resource) {
+function nedpageplus_get_final_display_type($resource){
     global $CFG, $PAGE;
 
-    if ($resource->filedisplay != RESOURCELIB_DISPLAY_AUTO) {
+    if ($resource->filedisplay != RESOURCELIB_DISPLAY_AUTO){
         return $resource->filedisplay;
     }
 
-    if (empty($resource->mainfile)) {
+    if (empty($resource->mainfile)){
         return RESOURCELIB_DISPLAY_DOWNLOAD;
     } else {
         $mimetype = mimeinfo('type', $resource->mainfile);
     }
 
-    if (file_mimetype_in_typegroup($mimetype, 'archive')) {
+    if (file_mimetype_in_typegroup($mimetype, 'archive')){
         return RESOURCELIB_DISPLAY_DOWNLOAD;
     }
-    if (file_mimetype_in_typegroup($mimetype, array('web_image', '.htm', 'web_video', 'web_audio'))) {
+    if (file_mimetype_in_typegroup($mimetype, ['web_image', '.htm', 'web_video', 'web_audio'])){
         return RESOURCELIB_DISPLAY_EMBED;
     }
 
@@ -118,7 +117,7 @@ function nedpageplus_get_final_display_type($resource) {
  * @param object $course
  * @param stored_file $file main file
  */
-function nedpageplus_print_workaround($resource, $cm, $course, $file) {
+function nedpageplus_print_workaround($resource, $cm, $course, $file){
     global $CFG, $OUTPUT;
 
     nedpageplus_print_header($resource, $cm, $course);
@@ -127,10 +126,10 @@ function nedpageplus_print_workaround($resource, $cm, $course, $file) {
 
     $resource->mainfile = $file->get_filename();
     echo '<div class="resourceworkaround">';
-    switch (nedpageplus_get_final_display_type($resource)) {
+    switch (nedpageplus_get_final_display_type($resource)){
         case RESOURCELIB_DISPLAY_POPUP:
             $fullurl = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
-            $options = empty($resource->filedisplayoptions) ? array() : unserialize($resource->filedisplayoptions);
+            $options = empty($resource->filedisplayoptions) ? [] : unserialize($resource->filedisplayoptions);
             $width  = empty($options['filepopupwidth'])  ? 620 : $options['filepopupwidth'];
             $height = empty($options['filepopupheight']) ? 450 : $options['filepopupheight'];
             $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
@@ -141,10 +140,6 @@ function nedpageplus_print_workaround($resource, $cm, $course, $file) {
         case RESOURCELIB_DISPLAY_NEW:
             $extra = 'onclick="this.target=\'_blank\'"';
             echo nedpageplus_get_clicktoopen($file, $resource->revision, $extra);
-            break;
-
-        case RESOURCELIB_DISPLAY_DOWNLOAD:
-            echo nedpageplus_get_clicktodownload($file, $resource->revision);
             break;
 
         case RESOURCELIB_DISPLAY_OPEN:
@@ -164,7 +159,7 @@ function nedpageplus_print_workaround($resource, $cm, $course, $file) {
  * @param object $course
  * @return void
  */
-function nedpageplus_print_header($nedpageplus, $cm, $course) {
+function nedpageplus_print_header($nedpageplus, $cm, $course){
     global $PAGE, $OUTPUT;
 
     $PAGE->set_title($course->shortname.': '.$nedpageplus->name);
@@ -181,7 +176,7 @@ function nedpageplus_print_header($nedpageplus, $cm, $course) {
  * @param bool $notused This variable is no longer used
  * @return void
  */
-function nedpageplus_print_heading($nedpageplus, $cm, $course, $notused = false) {
+function nedpageplus_print_heading($nedpageplus, $cm, $course, $notused = false){
     global $OUTPUT;
     echo $OUTPUT->heading(format_string($nedpageplus->name), 2);
 }
@@ -194,22 +189,22 @@ function nedpageplus_print_heading($nedpageplus, $cm, $course, $notused = false)
  * @param bool $ignoresettings print even if not specified in modedit
  * @return void
  */
-function nedpageplus_print_intro($nedpageplus, $cm, $course, $ignoresettings=false) {
+function nedpageplus_print_intro($nedpageplus, $cm, $course, $ignoresettings=false){
     global $OUTPUT;
 
-    $options = empty($nedpageplus->displayoptions) ? array() : unserialize($nedpageplus->displayoptions);
+    $options = empty($nedpageplus->displayoptions) ? [] : unserialize($nedpageplus->displayoptions);
 
     $extraintro = nedpageplus_get_optional_details($nedpageplus, $cm);
-    if ($extraintro) {
+    if ($extraintro){
         // Put a paragaph tag around the details
-        $extraintro = html_writer::tag('p', $extraintro, array('class' => 'resourcedetails'));
+        $extraintro = html_writer::tag('p', $extraintro, ['class' => 'resourcedetails']);
     }
 
-    if ($ignoresettings || !empty($options['printintro']) || $extraintro) {
+    if ($ignoresettings || !empty($options['printintro']) || $extraintro){
         $gotintro = trim(strip_tags($nedpageplus->intro));
-        if ($gotintro || $extraintro) {
+        if ($gotintro || $extraintro){
             echo $OUTPUT->box_start('mod_introbox', 'resourceintro');
-            if ($gotintro) {
+            if ($gotintro){
                 echo format_module_intro('nedpageplus', $nedpageplus, $cm->id);
             }
             echo $extraintro;
@@ -228,42 +223,38 @@ function nedpageplus_print_intro($nedpageplus, $cm, $course, $ignoresettings=fal
  * @param object $cm Course-module table row
  * @return string Size and type or empty string if show options are not enabled
  */
-function nedpageplus_get_optional_details($nedpageplus, $cm) {
+function nedpageplus_get_optional_details($nedpageplus, $cm){
     global $DB;
 
     $details = '';
 
-    $options = empty($nedpageplus->displayoptions) ? array() : @unserialize($nedpageplus->displayoptions);
-    if (!empty($options['showsize']) || !empty($options['showtype']) || !empty($options['showdate'])) {
-        if (!array_key_exists('filedetails', $options)) {
-            $filedetails = nedpageplus_get_file_details($nedpageplus, $cm);
-        } else {
-            $filedetails = $options['filedetails'];
-        }
+    $options = empty($nedpageplus->displayoptions) ? [] : @unserialize($nedpageplus->displayoptions);
+    if (!empty($options['showsize']) || !empty($options['showtype']) || !empty($options['showdate'])){
+        $filedetails = $options['filedetails'] ?? [];
         $size = '';
         $type = '';
         $date = '';
         $langstring = '';
         $infodisplayed = 0;
-        if (!empty($options['showsize'])) {
-            if (!empty($filedetails['size'])) {
+        if (!empty($options['showsize'])){
+            if (!empty($filedetails['size'])){
                 $size = display_size($filedetails['size']);
                 $langstring .= 'size';
                 $infodisplayed += 1;
             }
         }
-        if (!empty($options['showtype'])) {
-            if (!empty($filedetails['type'])) {
+        if (!empty($options['showtype'])){
+            if (!empty($filedetails['type'])){
                 $type = $filedetails['type'];
                 $langstring .= 'type';
                 $infodisplayed += 1;
             }
         }
-        if (!empty($options['showdate']) && (!empty($filedetails['modifieddate']) || !empty($filedetails['uploadeddate']))) {
-            if (!empty($filedetails['modifieddate'])) {
+        if (!empty($options['showdate']) && (!empty($filedetails['modifieddate']) || !empty($filedetails['uploadeddate']))){
+            if (!empty($filedetails['modifieddate'])){
                 $date = get_string('modifieddate', 'mod_nedpageplus', userdate($filedetails['modifieddate'],
                     get_string('strftimedatetimeshort', 'langconfig')));
-            } else if (!empty($filedetails['uploadeddate'])) {
+            } elseif (!empty($filedetails['uploadeddate'])){
                 $date = get_string('uploadeddate', 'mod_nedpageplus', userdate($filedetails['uploadeddate'],
                     get_string('strftimedatetimeshort', 'langconfig')));
             }
@@ -271,9 +262,9 @@ function nedpageplus_get_optional_details($nedpageplus, $cm) {
             $infodisplayed += 1;
         }
 
-        if ($infodisplayed > 1) {
+        if ($infodisplayed > 1){
             $details = get_string("resourcedetails_{$langstring}", 'nedpageplus',
-                (object)array('size' => $size, 'type' => $type, 'date' => $date));
+                (object)['size' => $size, 'type' => $type, 'date' => $date]);
         } else {
             // Only one of size, type and date is set, so just append.
             $details = $size . $type . $date;
@@ -286,13 +277,11 @@ function nedpageplus_get_optional_details($nedpageplus, $cm) {
 /**
  * Internal function - create click to open text with link.
  */
-function nedpageplus_get_clicktoopen($file, $revision, $extra='') {
+function nedpageplus_get_clicktoopen($file, $revision, $extra=''){
     global $CFG;
 
     $filename = $file->get_filename();
     $fullurl = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(), $file->get_filepath(), $file->get_filename());
 
-    $string = get_string('clicktoopen2', 'nedpageplus', "<a href=\"$fullurl\" $extra>$filename</a>");
-
-    return $string;
+    return get_string('clicktoopen2', 'nedpageplus', "<a href=\"$fullurl\" $extra>$filename</a>");
 }

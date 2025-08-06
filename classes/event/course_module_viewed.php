@@ -38,14 +38,14 @@ class course_module_viewed extends \core\event\course_module_viewed {
     /**
      * Init method.
      */
-    protected function init() {
+    protected function init(){
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'nedpageplus';
     }
 
-    public static function get_objectid_mapping() {
-        return array('db' => 'nedpageplus', 'restore' => 'nedpageplus');
+    public static function get_objectid_mapping(){
+        return ['db' => 'nedpageplus', 'restore' => 'nedpageplus'];
     }
 }
 

@@ -18,7 +18,7 @@
 /**
  * @package   mod_nedpageplus
  * @category  backup
- * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright 2010 onwards Eloy Lafuente (stronk7){@link http://stronk7.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,22 +33,23 @@ defined('MOODLE_INTERNAL') || die;
  */
 class backup_nedpageplus_activity_structure_step extends backup_activity_structure_step {
 
-    protected function define_structure() {
+    protected function define_structure(){
 
         // To know if we are including userinfo
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated
-        $nedpageplus = new backup_nested_element('nedpageplus', array('id'), array(
+        $nedpageplus = new backup_nested_element('nedpageplus', ['id'], [
             'name', 'intro', 'introformat', 'content', 'contentformat',
             'legacyfiles', 'legacyfileslast', 'linkname', 'linkposition', 'display', 'displayoptions',
-            'filedisplay', 'filedisplayoptions', 'revision', 'timemodified'));
+            'filedisplay', 'filedisplayoptions', 'revision', 'timemodified'
+        ]);
 
         // Build the tree
         // (love this)
 
         // Define sources
-        $nedpageplus->set_source_table('nedpageplus', array('id' => backup::VAR_ACTIVITYID));
+        $nedpageplus->set_source_table('nedpageplus', ['id' => backup::VAR_ACTIVITYID]);
 
         // Define id annotations
         // (none)

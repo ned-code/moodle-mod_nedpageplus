@@ -30,7 +30,11 @@ require_once($CFG->dirroot.'/mod/nedpageplus/locallib.php');
 require_once($CFG->libdir.'/filelib.php');
 
 class mod_nedpageplus_mod_form extends moodleform_mod {
-    function definition() {
+    /**
+     * Form definition
+     * @noinspection PhpOverridingMethodVisibilityInspection
+     */
+    public function definition(){
         global $CFG, $DB;
 
         $mform = $this->_form;
@@ -39,10 +43,10 @@ class mod_nedpageplus_mod_form extends moodleform_mod {
 
         //-------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
-        $mform->addElement('text', 'name', get_string('name'), array('size'=>'48'));
-        if (!empty($CFG->formatstringstriptags)) {
+        $mform->addElement('text', 'name', get_string('name'), ['size' => '48']);
+        if (!empty($CFG->formatstringstriptags)){
             $mform->setType('name', PARAM_TEXT);
-        } else {
+        } else{
             $mform->setType('name', PARAM_CLEANHTML);
         }
         $mform->addRule('name', null, 'required', null, 'client');
@@ -51,13 +55,14 @@ class mod_nedpageplus_mod_form extends moodleform_mod {
 
         //-------------------------------------------------------
         $mform->addElement('header', 'contentsection', get_string('contentheader', 'nedpageplus'));
-        $mform->addElement('editor', 'nedpageplus', get_string('content', 'nedpageplus'), null, nedpageplus_get_editor_options($this->context));
+        $mform->addElement('editor', 'nedpageplus', get_string('content', 'nedpageplus'), null,
+            nedpageplus_get_editor_options($this->context));
         $mform->addRule('nedpageplus', get_string('required'), 'required', null, 'client');
 
         //-------------------------------------------------------
         $mform->addElement('header', 'fileattachmentsection', get_string('fileattachment', 'nedpageplus'));
 
-        $filemanager_options = array();
+        $filemanager_options = [];
         $filemanager_options['accepted_types'] = '*';
         $filemanager_options['maxbytes'] = 0;
         $filemanager_options['maxfiles'] = 1;
@@ -65,55 +70,48 @@ class mod_nedpageplus_mod_form extends moodleform_mod {
 
         $mform->addElement('filemanager', 'files', get_string('file', 'nedpageplus'), null, $filemanager_options);
 
-        $mform->addElement('text', 'linkname', get_string('linkname', 'nedpageplus'), array('size'=>'48'));
-        if (!empty($CFG->formatstringstriptags)) {
+        $mform->addElement('text', 'linkname', get_string('linkname', 'nedpageplus'), ['size' => '48']);
+        if (!empty($CFG->formatstringstriptags)){
             $mform->setType('linkname', PARAM_TEXT);
-        } else {
+        } else{
             $mform->setType('linkname', PARAM_CLEANHTML);
         }
         $mform->addRule('linkname', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-        $linkpositions = array(
+        $linkpositions = [
             NEDPAGEPLUS_TOP    => get_string('top', 'nedpageplus'),
             NEDPAGEPLUS_BOTTOM => get_string('bottom', 'nedpageplus'),
-            NEDPAGEPLUS_BOTH   => get_string('topbottom', 'nedpageplus'));
+            NEDPAGEPLUS_BOTH   => get_string('topbottom', 'nedpageplus'),
+        ];
 
         $mform->addElement('select', 'linkposition', get_string('linkposition', 'nedpageplus'), $linkpositions);
 
         //-------------------------------------------------------
         $mform->addElement('header', 'fileappearancehdr', get_string('attachmentbehaviour', 'nedpageplus'));
 
-        $fileoptions = array(
+        $fileoptions = [
             RESOURCELIB_DISPLAY_DOWNLOAD => get_string('resourcedisplaydownload'),
             RESOURCELIB_DISPLAY_OPEN     => get_string('resourcedisplayopen'),
-            RESOURCELIB_DISPLAY_POPUP    => get_string('resourcedisplaypopup'));
+            RESOURCELIB_DISPLAY_POPUP    => get_string('resourcedisplaypopup'),
+        ];
 
-        if (count($fileoptions) == 1) {
-            $mform->addElement('hidden', 'filedisplay');
-            $mform->setType('filedisplay', PARAM_INT);
-            reset($fileoptions);
-            $mform->setDefault('filedisplay', key($fileoptions));
-        } else {
-            $mform->addElement('select', 'filedisplay', get_string('displayselect', 'nedpageplus'), $fileoptions);
-            $mform->setDefault('filedisplay', $config->filedisplay);
-            $mform->addHelpButton('filedisplay', 'displayselect', 'nedpageplus');
+        $mform->addElement('select', 'filedisplay', get_string('displayselect', 'nedpageplus'), $fileoptions);
+        $mform->setDefault('filedisplay', $config->filedisplay);
+        $mform->addHelpButton('filedisplay', 'displayselect', 'nedpageplus');
+
+        $mform->addElement('text', 'filepopupwidth', get_string('popupwidth', 'nedpageplus'), ['size' => 3]);
+        if (count($fileoptions) > 1){
+            $mform->disabledIf('filepopupwidth', 'filedisplay', 'noteq', RESOURCELIB_DISPLAY_POPUP);
         }
+        $mform->setType('filepopupwidth', PARAM_INT);
+        $mform->setDefault('filepopupwidth', $config->filepopupwidth);
 
-        if (array_key_exists(RESOURCELIB_DISPLAY_POPUP, $fileoptions)) {
-            $mform->addElement('text', 'filepopupwidth', get_string('popupwidth', 'nedpageplus'), array('size'=>3));
-            if (count($fileoptions) > 1) {
-                $mform->disabledIf('filepopupwidth', 'filedisplay', 'noteq', RESOURCELIB_DISPLAY_POPUP);
-            }
-            $mform->setType('filepopupwidth', PARAM_INT);
-            $mform->setDefault('filepopupwidth', $config->filepopupwidth);
-
-            $mform->addElement('text', 'filepopupheight', get_string('popupheight', 'nedpageplus'), array('size'=>3));
-            if (count($fileoptions) > 1) {
-                $mform->disabledIf('filepopupheight', 'filedisplay', 'noteq', RESOURCELIB_DISPLAY_POPUP);
-            }
-            $mform->setType('filepopupheight', PARAM_INT);
-            $mform->setDefault('filepopupheight', $config->filepopupheight);
+        $mform->addElement('text', 'filepopupheight', get_string('popupheight', 'nedpageplus'), ['size' => 3]);
+        if (count($fileoptions) > 1){
+            $mform->disabledIf('filepopupheight', 'filedisplay', 'noteq', RESOURCELIB_DISPLAY_POPUP);
         }
+        $mform->setType('filepopupheight', PARAM_INT);
+        $mform->setDefault('filepopupheight', $config->filepopupheight);
 
         $mform->addElement('advcheckbox', 'fileprintheading', get_string('printheading', 'nedpageplus'));
         $mform->setDefault('fileprintheading', $config->fileprintheading);
@@ -123,33 +121,33 @@ class mod_nedpageplus_mod_form extends moodleform_mod {
         //-------------------------------------------------------
         $mform->addElement('header', 'appearancehdr', get_string('pagebehaviour', 'nedpageplus'));
 
-        $defaultdisplayoptions = array(RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP);
+        $defaultdisplayoptions = [RESOURCELIB_DISPLAY_OPEN, RESOURCELIB_DISPLAY_POPUP];
 
-        if ($this->current->instance) {
+        if ($this->current->instance){
             $options = resourcelib_get_displayoptions($defaultdisplayoptions, $this->current->display);
-        } else {
+        } else{
             $options = resourcelib_get_displayoptions($defaultdisplayoptions);
         }
-        if (count($options) == 1) {
+        if (count($options) == 1){
             $mform->addElement('hidden', 'display');
             $mform->setType('display', PARAM_INT);
             reset($options);
             $mform->setDefault('display', key($options));
-        } else {
+        } else{
             $mform->addElement('select', 'display', get_string('displayselect', 'nedpageplus'), $options);
             $mform->setDefault('display', $config->display);
         }
 
-        if (array_key_exists(RESOURCELIB_DISPLAY_POPUP, $options)) {
-            $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'nedpageplus'), array('size'=>3));
-            if (count($options) > 1) {
+        if (array_key_exists(RESOURCELIB_DISPLAY_POPUP, $options)){
+            $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'nedpageplus'), ['size' => 3]);
+            if (count($options) > 1){
                 $mform->disabledIf('popupwidth', 'display', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
             $mform->setType('popupwidth', PARAM_INT);
             $mform->setDefault('popupwidth', $config->popupwidth);
 
-            $mform->addElement('text', 'popupheight', get_string('popupheight', 'nedpageplus'), array('size'=>3));
-            if (count($options) > 1) {
+            $mform->addElement('text', 'popupheight', get_string('popupheight', 'nedpageplus'), ['size' => 3]);
+            if (count($options) > 1){
                 $mform->disabledIf('popupheight', 'display', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
             $mform->setType('popupheight', PARAM_INT);
@@ -162,9 +160,11 @@ class mod_nedpageplus_mod_form extends moodleform_mod {
         $mform->setDefault('printintro', $config->printintro);
 
         // add legacy files flag only if used
-        if (isset($this->current->legacyfiles) and $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO) {
-            $options = array(RESOURCELIB_LEGACYFILES_DONE   => get_string('legacyfilesdone', 'nedpageplus'),
-                             RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'nedpageplus'));
+        if (isset($this->current->legacyfiles) and $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO){
+            $options = [
+                RESOURCELIB_LEGACYFILES_DONE   => get_string('legacyfilesdone', 'nedpageplus'),
+                RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'nedpageplus'),
+            ];
             $mform->addElement('select', 'legacyfiles', get_string('legacyfiles', 'nedpageplus'), $options);
             $mform->setAdvanced('legacyfiles', 1);
         }
@@ -181,49 +181,51 @@ class mod_nedpageplus_mod_form extends moodleform_mod {
         $mform->setDefault('revision', 1);
     }
 
-    function data_preprocessing(&$default_values) {
-        if ($this->current->instance) {
+    public function data_preprocessing(&$default_values){
+        if ($this->current->instance){
             $draftitemid = file_get_submitted_draft_itemid('nedpageplus');
             $default_values['nedpageplus']['format'] = $default_values['contentformat'];
-            $default_values['nedpageplus']['text']   = file_prepare_draft_area($draftitemid, $this->context->id, 'mod_nedpageplus', 'content', 0, nedpageplus_get_editor_options($this->context), $default_values['content']);
+            $default_values['nedpageplus']['text'] =
+                file_prepare_draft_area($draftitemid, $this->context->id, 'mod_nedpageplus', 'content', 0,
+                    nedpageplus_get_editor_options($this->context), $default_values['content']);
             $default_values['nedpageplus']['itemid'] = $draftitemid;
         }
         // File options.
-        if (!empty($default_values['filedisplayoptions'])) {
+        if (!empty($default_values['filedisplayoptions'])){
             $filedisplayoptions = unserialize($default_values['filedisplayoptions']);
-            if (isset($filedisplayoptions['fileprintintro'])) {
+            if (isset($filedisplayoptions['fileprintintro'])){
                 $default_values['fileprintintro'] = $filedisplayoptions['fileprintintro'];
             }
-            if (isset($filedisplayoptions['fileprintheading'])) {
+            if (isset($filedisplayoptions['fileprintheading'])){
                 $default_values['fileprintheading'] = $filedisplayoptions['fileprintheading'];
             }
-            if (!empty($filedisplayoptions['filepopupwidth'])) {
+            if (!empty($filedisplayoptions['filepopupwidth'])){
                 $default_values['filepopupwidth'] = $filedisplayoptions['filepopupwidth'];
             }
-            if (!empty($filedisplayoptions['filepopupheight'])) {
+            if (!empty($filedisplayoptions['filepopupheight'])){
                 $default_values['filepopupheight'] = $filedisplayoptions['filepopupheight'];
             }
         }
         // Page options.
-        if (!empty($default_values['displayoptions'])) {
+        if (!empty($default_values['displayoptions'])){
             $displayoptions = unserialize($default_values['displayoptions']);
-            if (isset($displayoptions['printintro'])) {
+            if (isset($displayoptions['printintro'])){
                 $default_values['printintro'] = $displayoptions['printintro'];
             }
-            if (isset($displayoptions['printheading'])) {
+            if (isset($displayoptions['printheading'])){
                 $default_values['printheading'] = $displayoptions['printheading'];
             }
-            if (!empty($displayoptions['popupwidth'])) {
+            if (!empty($displayoptions['popupwidth'])){
                 $default_values['popupwidth'] = $displayoptions['popupwidth'];
             }
-            if (!empty($displayoptions['popupheight'])) {
+            if (!empty($displayoptions['popupheight'])){
                 $default_values['popupheight'] = $displayoptions['popupheight'];
             }
         }
 
-        if ($this->current->instance) {
+        if ($this->current->instance){
             $draftitemid = file_get_submitted_draft_itemid('files');
-            file_prepare_draft_area($draftitemid, $this->context->id, 'mod_nedpageplus', 'attachment', 0, array('subdirs'=>true));
+            file_prepare_draft_area($draftitemid, $this->context->id, 'mod_nedpageplus', 'attachment', 0, ['subdirs' => true]);
             $default_values['files'] = $draftitemid;
         }
     }

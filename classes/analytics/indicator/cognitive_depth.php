@@ -46,11 +46,11 @@ class cognitive_depth extends activity_base {
         return new \lang_string('indicator:cognitivedepth', 'mod_nedpageplus');
     }
 
-    public function get_indicator_type() {
+    public function get_indicator_type(){
         return self::INDICATOR_COGNITIVE;
     }
 
-    public function get_cognitive_depth_level(\cm_info $cm) {
+    public function get_cognitive_depth_level(\cm_info $cm){
         return self::COGNITIVE_LEVEL_1;
     }
 }

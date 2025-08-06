@@ -42,7 +42,7 @@ class mod_nedpageplus_lib_testcase extends advanced_testcase {
      * Prepares things before this test case is initialised
      * @return void
      */
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass(){
         global $CFG;
         require_once($CFG->dirroot . '/mod/nedpageplus/lib.php');
     }
@@ -51,7 +51,7 @@ class mod_nedpageplus_lib_testcase extends advanced_testcase {
      * Test nedpageplus_view
      * @return void
      */
-    public function test_nedpageplus_view() {
+    public function test_nedpageplus_view(){
         global $CFG;
 
         $CFG->enablecompletion = 1;
@@ -89,7 +89,7 @@ class mod_nedpageplus_lib_testcase extends advanced_testcase {
         $this->assertEquals(1, $completiondata->completionstate);
     }
 
-    public function test_nedpageplus_core_calendar_provide_event_action() {
+    public function test_nedpageplus_core_calendar_provide_event_action(){
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -115,7 +115,7 @@ class mod_nedpageplus_lib_testcase extends advanced_testcase {
         $this->assertTrue($actionevent->is_actionable());
     }
 
-    public function test_nedpageplus_core_calendar_provide_event_action_already_completed() {
+    public function test_nedpageplus_core_calendar_provide_event_action_already_completed(){
         global $CFG;
 
         $this->resetAfterTest();
@@ -157,7 +157,7 @@ class mod_nedpageplus_lib_testcase extends advanced_testcase {
      * @param string $eventtype The event type.
      * @return bool|calendar_event
      */
-    private function create_action_event($courseid, $instanceid, $eventtype) {
+    private function create_action_event($courseid, $instanceid, $eventtype){
         $event = new stdClass();
         $event->name = 'Calendar event';
         $event->modulename  = 'nedpageplus';
